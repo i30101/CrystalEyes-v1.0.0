@@ -2,20 +2,20 @@
 
 TODO update these
 ![version](https://img.shields.io/badge/release-v1.0.0-blue)
-![python-versions](https://img.shields.io/badge/python-3.11_%7C_3.12_%7C_3.13-limegreen)
-![cellpose-version](https://img.shields.io/badge/cellpose-4.0.6-red)
+![python-versions](https://img.shields.io/badge/python-3.9_%7C_3.10_%7C_3.11_%7C_3.12-limegreen)
+![cellpose-version](https://img.shields.io/badge/cellpose-3.0.10-red)
+![cellpose-version](https://img.shields.io/badge/NumPy-1.26-red)
 [![Licence: MIT](https://img.shields.io/github/license/i30101/CrystalEyes-v1.0.0)](https://github.com/i30101/CrystalEyes-v1.0.0/blob/master/LICENSE)
 ![issues](https://img.shields.io/github/issues/i30101/CrystalEyes-v1.0.0)
 [![repo size](https://img.shields.io/github/repo-size/i30101/CrystalEyes-v1.0.0)](https://github.com/i30101/CrystalEyes-v1.0.0/)
-
-
-
-
 <br>
+
+
 A Python app for analyzing microscope images of nano-ice crystal growth using Python and machine learning.
 
 ### How it works
 CrystalEyes uses Python and the Cellpose machine learning library to extract data from images of ice crystal growth. It processes binary Linkam Data Files to extract temperature data and images. These images are analyzed to extract values such as average area, density, and coverage of ice crystals. The GUI, made using Tkinter and Ttk, provides a simple user experience.
+<br>
 
 
 
@@ -31,22 +31,45 @@ Version `1.0.0` introduces a new GUI and support for LDF files only. In contrast
 ### Version 1.2.0: what's new
 - Extraction of additional variables (see below for full list)
 - Fixed debugging console
+- Data boxes to quickly view temperature / rate / limit data along with interactive temperature graph
 
 ### Full Release Schedule
 
-| Version  | Description                                                 | 
-|----------|-------------------------------------------------------------| 
-| `v1.2.0` | Fully functioning user interface / LDF parser / CV analysis |
-| `v1.0.0` | Beta testing for new UI                                     |
-| `v0.9.0` | Beta testing for LDF parser                                 |
-| `v0.8.0` | OCR-dependent, outdated                                     |
-
+| Version  | Description                                                    | 
+|----------|----------------------------------------------------------------| 
+| `v1.2.0` | Fully functioning user interface, parser, and analysis modules |
+| `v1.0.0` | Non-functioning beta testing for new user interface            |
+| `v0.9.0` | Non-functioning beta testing for Linkam Data File parser       |
+| `v0.8.0` | Functioning and OCR-dependent, outdated                        |
+<br>
 
 
 
 ## Dependencies
+Unfortunately, CrystalEyes `v1.2.0` has highly specific dependencies. Most critical is Cellpose `3.0.10`, as the newer `4.0.6` is too-heavily GPU-reliant and requires Nvidia CUDA due to its larger neural network. The latest version of NumPy supported by Cellpose `3.0.10` is `1.26.4`, meaning Python versions `3.9`, `3.10`, `3.11`, or `3.12` are supported. 
+
+> [!CAUTION]
+> Python `3.13` does not support NumPy `1.26`. Please be 
+
+CrystalEyes `1.2.0` was primarily tested on a system with 32 GB RAM with an integrated Intel processor/graphics chip (the graphics card was not used). Expect 1.8-2.5 GB of RAM use during operation; CPU usage will spike for each frame analysis as well.
+
+Microsoft's Redistributable C++ Compiler (often installed through [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/?q=build+tools)) may be required to install NumPy `1.26`. If you are unable to download the C++ compiler, consider using an alternate Python interpreter and compiler (such as Miniconda). 
+
+> [!NOTE]
+> Python version `3.10.13` along with NumPy version `1.26.3` were used during testing, along with Miniconda3 as the interpreter.
+
+A full list of 
+<br>
 
 
+## Setup
+
+<br>
+
+
+## Usage
+
+<br>
 
 
 ### List of LDF variables
