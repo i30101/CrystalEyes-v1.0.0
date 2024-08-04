@@ -82,9 +82,8 @@ class LinkamDataFile:
             t0 = time.time()
             analyzed_image, analyzed_data = Analysis.analyze_image(image)
             t1 = time.time()
-            t = f"{t1 - t0}"
-            print(f"Image analyzed in {t} seconds")
-            analyzed_times.append(t)
+            print(f"Image analyzed in {t1 - t0:.3f} seconds")
+            analyzed_times.append(round(t1 - t0, 3))
 
             # append processed image
             self.processed_images.append(analyzed_image)
