@@ -17,14 +17,31 @@ A Python app for analyzing microscope images of nano-ice crystal growth using Py
 ### How it works
 CrystalEyes uses Python and the Cellpose machine learning library to extract data from images of ice crystal growth. It processes binary Linkam Data Files to extract temperature data and images. These images are analyzed to extract values such as average area, density, and coverage of ice crystals. The GUI, made using Tkinter and Ttk, provides a simple user experience.
 
-### What's new
-Version `1.0.0` introduces a new GUI and support for LDF files only. In contrast to versions `0.8.0` and `0.9.0`, LDF support enables instant processing of images. You do not have to export images and video files from Linkam manually. 
+
+
+
+## Changelog
+
+### Version 1.0.0: app rehaul
+Version `1.0.0` introduces a new GUI and support for LDF files only. In contrast to versions `0.8.0` and `0.9.0`, LDF support enables instant processing of images. You do not have to export images and video files from Linkam manually; the built-in binary parser does that instead. 
 
 > [!WARNING]
 > Timestamp data is not available for this version. The app will not process timestamps from LDF files.
 
+### Version 1.2.0: what's new
+- Extraction of additional variables (see below for full list)
+- Fixed debugging console
 
-## Changelog
+### Full Release Schedule
+
+| Version  | Description                                                 | 
+|----------|-------------------------------------------------------------| 
+| `v1.2.0` | Fully functioning user interface / LDF parser / CV analysis |
+| `v1.0.0` | Beta testing for new UI                                     |
+| `v0.9.0` | Beta testing for LDF parser                                 |
+| `v0.8.0` | OCR-dependent, outdated                                     |
+
+
 
 
 ## Dependencies

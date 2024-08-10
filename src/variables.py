@@ -16,7 +16,7 @@ class Variables:
     """ Global variables and constants """
 
     """ App Name """
-    APP_NAME = "CrystalEyes v1.0.0"
+    APP_NAME = "CrystalEyes v1.2.0"
 
     """ File paths """
     ICON_PATH = str(Path(__file__).parent.parent / "assets" / "icon.png")
