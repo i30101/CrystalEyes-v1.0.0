@@ -15,6 +15,10 @@ import pandas as pd
 from src.link.analysis import Analysis
 
 
+def slope(x1: float, x2: float, delta: int) -> float:
+    return (x2 - x1) / delta
+
+
 class LinkamDataFile:
     """ Linkam Data File object """
 
@@ -70,19 +74,37 @@ class LinkamDataFile:
         """ Analyzes raw images and extracts data """
 
         self.processed_images = []
-        self.data = [[] for _ in range(7)]
+        self.data = [[] for _ in range(8)]
+
+        analyzed_times = []
 
         for image in self.raw_images:
             t0 = time.time()
             analyzed_image, analyzed_data = Analysis.analyze_image(image)
             t1 = time.time()
-            print(f"Image analyzed in {t1 - t0:.3f} seconds")
+            t = f"{t1 - t0}"
+            print(f"Image analyzed in {t} seconds")
+            analyzed_times.append(t)
 
             # append processed image
             self.processed_images.append(analyzed_image)
 
             for i, variable in enumerate(analyzed_data):
                 self.data[i].append(variable)
+
+        # find rate of area change over time
+        average_area_um = self.data[1]
+        average_area_rate = []
+        for i, area in enumerate(average_area_um):
+            if i == 0:
+                average_area_rate.append(slope(area, average_area_um[i + 1], 1))
+            elif i == len(average_area_um) - 1:
+                average_area_rate.append(slope(average_area_um[i - 1], area, 1))
+            else:
+                average_area_rate.append(slope(average_area_um[i - 1], average_area_um[i + 1], 2))
+        self.data.append(average_area_rate)
+
+        self.data.append(analyzed_times)
 
 
     def to_df(self) -> pd.DataFrame:
@@ -95,18 +117,21 @@ class LinkamDataFile:
             "Ramp number": self.ramps,
             "Average area (px²)": self.data[0],
             "Average area (µm²)": self.data[1],
+            "Rate of area change (µm²/min)": self.data[8],
             "Total area (px²)": self.data[2],
             "Total area (µm²)": self.data[3],
             "Density (crystals/µm²)": self.data[4],
             "Coverage (%)": self.data[5],
-            "Number of contours": self.data[6]
+            "Side ratio": self.data[6],
+            "Number of contours": self.data[7],
+            "Duration of analysis (s)": self.data[9]
         }
         return pd.DataFrame(columns)
 
 
     def data_summary(self) -> str:
         """ Creates summary of extracted data """
-        output = f"\nAnalyzed Linkam Data File: {self.filepath}"
+        output = f"Analyzed Linkam Data File: {self.filepath}"
         output += f"\n    Number of frames: {len(self.raw_images)}"
         output += f"\n    Ending temperature: {self.temperatures[-1]} °C"
         output += f"\n    Temperature ramp: {self.ramps[0]} °C/min"
