@@ -7,6 +7,7 @@ Version 1.0.0
 
 Analysis module for CrystalEyes
 """
+import math
 
 import cv2
 import numpy as np
@@ -53,10 +54,21 @@ class Analysis:
         area_px = 0
         area_um = 0
 
+        # ratio sum
+        ratios_sum = 0
+
         for contour in contours:
             # calculate areas
             area_px += len(contour)
             area_um += Analysis.px_to_um(len(contour))
+
+            # find rectangle bounding box and side ratio
+            rect = cv2.minAreaRect(contour)
+            box = np.intp(cv2.boxPoints(rect))
+            sides = [math.dist(box[0], box[1]), math.dist(box[1], box[2])]
+            sides.sort()
+            ratio = sides[0] / sides[1]
+            ratios_sum += ratio
 
             cv2.drawContours(processed_image, [contour], -1, color=(0, 0, 0, 100), thickness=cv2.FILLED)
 
@@ -72,6 +84,7 @@ class Analysis:
                 round(area_um, 3),
                 round(num_contours / image_area_um, 3),
                 round(area_um / image_area_um, 3),
+                ratios_sum / num_contours,
                 num_contours
             ]
         )
