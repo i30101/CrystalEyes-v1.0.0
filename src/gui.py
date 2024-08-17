@@ -265,7 +265,7 @@ class Gui:
         self.set_px_entry(self.options.get_px())
         self.set_um_entry(self.options.get_um())
 
-        self.console.message("Settings reset to default")
+        self.console.update("Settings reset to default")
 
 
 
