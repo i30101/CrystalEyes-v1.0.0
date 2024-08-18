@@ -31,7 +31,6 @@ class Console:
         self.console.bind("<<Modified>>", self.callback)
 
         self.nothing_outputted = True
-        self.add_newline = False
 
         # text formatting options
         self.console.tag_configure("red", foreground="red")
@@ -43,15 +42,11 @@ class Console:
 
     def message(self, message: str, color: str="black"):
         self.console.configure(state=tk.NORMAL)
-        output_message = message
-        if self.add_newline:
-            self.add_newline = False
-            output_message = "\n" + output_message
         if self.nothing_outputted:
-            self.console.insert(tk.INSERT, output_message, color)
+            self.console.insert(tk.INSERT, message, color)
             self.nothing_outputted = False
         else:
-            self.console.insert(tk.INSERT, "\n" + output_message, color)
+            self.console.insert(tk.INSERT, "\n\n" + message, color)
         self.console.configure(state=tk.DISABLED)
 
 
