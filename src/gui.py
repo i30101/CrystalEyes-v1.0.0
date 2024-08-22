@@ -16,6 +16,7 @@ import os
 from ctypes import windll
 import numpy as np
 from PIL import Image
+import time
 
 from src.link.analysis import Analysis
 from src.media.viewer import Viewer
@@ -24,6 +25,7 @@ from src.variables import Variables
 from src.nav.nav1 import Nav1
 from src.nav.nav2 import Nav2
 from src.nav.nav3 import Nav3
+from src.nav.nav4 import Nav4
 
 # components
 from src.components.console import Console
@@ -34,7 +36,6 @@ from src.data.pathviewer import PathViewer
 from src.data.datatable import DataTable
 from src.data.datagraph import DataGraph
 from src.data.analyze import AnalyzeBox
-from src.data.ramp import RampBox
 
 from src.link.reader import LinkamDataReader
 
@@ -67,13 +68,15 @@ class Gui:
         # ################ TABS ################ #
         self.tab_control = ttk.Notebook(self.left)
 
-        self.tab1 = Nav1(self.tab_control)
-        self.tab2 = Nav2(self.tab_control)
-        self.tab3 = Nav3(self.tab_control)
+        self.nav1 = Nav1(self.tab_control)
+        self.nav2 = Nav2(self.tab_control)
+        self.nav3 = Nav3(self.tab_control)
+        self.nav4 = Nav4(self.tab_control, self.theme_updated)
 
-        self.tab_control.add(self.tab1, text="File")
-        self.tab_control.add(self.tab2, text="Scale")
-        self.tab_control.add(self.tab3, text="Data")
+        self.tab_control.add(self.nav1, text="File")
+        self.tab_control.add(self.nav2, text="Scale")
+        self.tab_control.add(self.nav3, text="Data")
+        self.tab_control.add(self.nav4, text="Settings")
 
         self.tab_control.pack(fill=tk.X, pady=Variables.NOPAD_PAD, expand=False)
 
@@ -106,7 +109,6 @@ class Gui:
         self.data_table = DataTable(self.right)
         self.data_graph = DataGraph(self.right, self.frame_changed)
         self.analyze_box = AnalyzeBox(self.right)
-        # self.ramp_box = RampBox(self.right)
 
 
         self.config_event_entries()
@@ -119,7 +121,9 @@ class Gui:
         left_width = int(total_width * Variables.LEFT_WIDTH)
         self.main_paned_window.sashpos(0, left_width)
 
-        # self.root.after(100, lambda: self.root.state('zoomed'))
+        if self.options.get_open_fullscreen():
+            self.root.after(100, lambda: self.root.state('zoomed'))
+
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
 
@@ -131,35 +135,43 @@ class Gui:
         """ Configures events and entries """
 
         # tab control configs
-        self.tab1.open_file_button.config(command=self.open_file)
-        self.tab1.clear_button.config(command=self.clear_media)
-        self.tab1.theme_button.config(command=self.theme_updated)
-        self.tab1.reset_settings_button.config(command=self.settings_reset)
+        self.nav1.open_file_button.config(command=self.open_file)
+        self.nav1.clear_button.config(command=self.clear_media)
 
         # tab 2 configs
-        self.tab2.reset_scale_button.config(command=self.reset_scale)
+        self.nav2.reset_scale_button.config(command=self.reset_scale)
         self.set_px_entry(self.options.get_px())
-        self.tab2.px_input.trace_add('write', self.px_entry_updated)
+        self.nav2.px_input.trace_add('write', self.px_entry_updated)
         self.set_um_entry(self.options.get_um())
-        self.tab2.um_input.trace_add('write', self.um_entry_updated)
+        self.nav2.um_input.trace_add('write', self.um_entry_updated)
         self.set_scale_entry(self.options.get_scale())
-        self.tab2.scale_input.trace_add('write', self.scale_entry_updated)
+        self.nav2.scale_input.trace_add('write', self.scale_entry_updated)
 
         # tab 3 configs
-        self.tab3.browse_button.config(command=self.folder_browse)
-        self.tab3.export_path.set(self.options.get_export_path())
-        self.tab3.export_path.trace_add('write', self.export_path_updated)
-        self.tab3.processed_images.set(self.options.get_processed_checkbox())
-        self.tab3.processed_images.trace_add(
+        self.nav3.browse_button.config(command=self.folder_browse)
+        self.nav3.export_path.set(self.options.get_export_path())
+        self.nav3.export_path.trace_add('write', self.export_path_updated)
+        self.nav3.processed_images.set(self.options.get_processed_checkbox())
+        self.nav3.processed_images.trace_add(
             'write',
-            lambda *_: self.options.set_processed_checkbox(self.tab3.processed_images.get())
+            lambda *_: self.options.set_open_fullscreen(self.nav3.processed_images.get())
         )
-        self.tab3.raw_images.set(self.options.get_raw_checkbox())
-        self.tab3.raw_images.trace_add(
+        self.nav3.raw_images.set(self.options.get_raw_checkbox())
+        self.nav3.raw_images.trace_add(
             'write',
-            lambda *_: self.options.set_raw_checkbox(self.tab3.raw_images.get())
+            lambda *_: self.options.set_raw_checkbox(self.nav3.raw_images.get())
         )
-        self.tab3.download_button.config(command=self.export_data)
+        self.nav3.download_button.config(command=self.export_data)
+
+        # tab 4 configs
+        self.nav4.theme_combo.set(self.options.get_theme().capitalize())
+        self.nav4.open_fullscreen.set(self.options.get_open_fullscreen())
+        self.nav4.open_fullscreen.trace_add(
+            'write',
+            lambda *_ : self.options.set_open_fullscreen(self.nav4.open_fullscreen.get())
+        )
+        self.nav4.reset_settings_button.config(command=self.settings_reset)
+
 
         # data table configs
         self.media.media_viewer.current_frame.trace_add(
@@ -232,10 +244,7 @@ class Gui:
 
     def theme_updated(self):
         """ Theme was updated """
-        if self.options.get_theme() == "light":
-            self.options.set_theme("dark")
-        elif self.options.get_theme() == "dark":
-            self.options.set_theme("light")
+        self.options.set_theme(self.nav4.theme_combo.get().lower())
         sv_ttk.set_theme(self.options.get_theme())
 
 
@@ -245,9 +254,12 @@ class Gui:
 
         sv_ttk.set_theme("light")
 
-        self.tab3.processed_images.set(self.options.get_processed_checkbox())
-        self.tab3.raw_images.set(self.options.get_raw_checkbox())
-        self.tab3.export_path.set(self.options.get_export_path())
+        self.nav3.processed_images.set(self.options.get_processed_checkbox())
+        self.nav3.raw_images.set(self.options.get_raw_checkbox())
+        self.nav3.export_path.set(self.options.get_export_path())
+
+        self.nav4.theme_combo.set(self.options.get_theme().capitalize())
+        self.nav4.open_fullscreen.set(self.options.get_open_fullscreen())
 
         self.set_scale_entry(self.options.get_scale())
         self.set_px_entry(self.options.get_px())
@@ -268,33 +280,33 @@ class Gui:
 
     def get_input_values(self) -> tuple:
         """ Gets all input values and tries to convert to float """
-        return (float(self.tab2.scale_input.get()),
-                float(self.tab2.px_input.get()),
-                float(self.tab2.um_input.get()))
+        return (float(self.nav2.scale_input.get()),
+                float(self.nav2.px_input.get()),
+                float(self.nav2.um_input.get()))
 
 
     def set_scale_entry(self, scale: float):
         """ Sets value in scale entry, always rounds to 5 decimal points"""
-        if scale == self.tab2.scale_input.get():
+        if scale == self.nav2.scale_input.get():
             return
         new_scale = round(scale, 5)
-        self.tab2.scale_input.set(new_scale)
-        Analysis.set_scale(float(self.tab2.scale_entry.get()))
+        self.nav2.scale_input.set(new_scale)
+        Analysis.set_scale(float(self.nav2.scale_entry.get()))
 
 
     def set_px_entry(self, px: float):
         """ Sets value in pixel entry """
-        if px == self.tab2.scale_input.get():
+        if px == self.nav2.scale_input.get():
             return
         new_px = round(px, 3)
-        self.tab2.px_input.set(new_px)
+        self.nav2.px_input.set(new_px)
 
 
     def set_um_entry(self, um: float):
         """ Sets value in um entry """
-        if um == self.tab2.scale_input.get():
+        if um == self.nav2.scale_input.get():
             return
-        self.tab2.um_input.set(um)
+        self.nav2.um_input.set(um)
 
 
     def scale_entry_updated(self, _1, _2, _3):
@@ -348,13 +360,13 @@ class Gui:
         filepath = filedialog.askdirectory()
         if len(filepath) == 0:
             return
-        self.tab3.export_path.set(filepath)
+        self.nav3.export_path.set(filepath)
 
 
 
     def export_path_updated(self, _1, _2, _3):
         """ Path to which data is exported is updated """
-        self.options.set_export_path(self.tab3.export_path.get())
+        self.options.set_export_path(self.nav3.export_path.get())
 
 
     def export_data(self):
@@ -367,7 +379,7 @@ class Gui:
         if not self.linkam_data_file.processed_images:
             self.console.error("File not analyzed yet")
 
-        export_directory = (self.tab3.export_path.get() + "/" +
+        export_directory = (self.nav3.export_path.get() + "/" +
                             self.linkam_data_file.filepath[ : self.linkam_data_file.filepath.rfind(".ldf")] + "/")
 
         # ensure the folder directory exists before writing
@@ -376,7 +388,7 @@ class Gui:
         data_df = self.linkam_data_file.to_df()
         data_df.to_excel(export_directory + self.linkam_data_file.filepath + ".xlsx", index=False)
 
-        if self.tab3.raw_images.get():
+        if self.nav3.raw_images.get():
             # export raw images to directory "raw"
             raw_dir = os.path.join(export_directory, "raw")
             os.makedirs(raw_dir, exist_ok=True)
@@ -384,7 +396,7 @@ class Gui:
                 pil_img = Image.fromarray(img)
                 pil_img.save(os.path.join(raw_dir, f"raw_{i:04d}.jpg"), "JPEG")
 
-        if self.tab3.processed_images.get():
+        if self.nav3.processed_images.get():
             # export processed images to directory "processed"
             processed_dir = os.path.join(export_directory, "processed")
             os.makedirs(processed_dir, exist_ok=True)
@@ -440,7 +452,15 @@ class Gui:
             end_frame
         )
 
+        t0 = time.time()
         self.linkam_data_file.analyze()
+        t1 = time.time()
+        duration = t1 - t0
+
         self.media.show_media(self.linkam_data_file.processed_images)
         self.data_graph.update_graph(self.linkam_data_file.temperatures)
-        self.console.message(self.linkam_data_file.data_summary())
+        self.console.message(
+            self.linkam_data_file.data_summary()
+            + f"\n    Total duration: {duration:.3f} seconds"
+            + f"({duration / len(self.linkam_data_file.raw_images):.3f} seconds per frame)"
+        )
