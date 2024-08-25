@@ -25,6 +25,7 @@ class DataGraph(DataBox):
 
         # Matplotlib Figure and Canvas
         self.figure = Figure(figsize=(5, 3), dpi=80)
+        self.figure.subplots_adjust(top=0.9, right=0.97, bottom=0.2)
         self.ax = self.figure.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.box)
         self.canvas_widget = self.canvas.get_tk_widget()
