@@ -7,14 +7,7 @@ TODO add setup script
 
 
 Component level
-TODO add units to databox
-TODO add number of frames to data box
-TODO fix graph visibility
 TODO fix console whitespaces
-TODO fix console colors
-
 
 Analysis
-TODO fix frame numbers
-TODO add time required to process images
-TODO fix scaling calculation
+TODO find how elliptical a contour is
