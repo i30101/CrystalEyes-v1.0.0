@@ -42,10 +42,6 @@ class LinkamDataReader:
 
         file_name = f"{filepath[filepath.rindex('/') + 1 : ]}"
 
-        # TODO add later if used
-        # date_string = "".join(c if c.isdigit() else " " for c in file_name[ : 10]).strip().replace(" ", "-")
-        # date = datetime.strptime(date_string, "%m-%d-%y").date()
-
         with open(filepath, "rb") as file:
             data = file.read()
 
@@ -67,8 +63,6 @@ class LinkamDataReader:
 
             # convert to readable UTF-8
             readable_text = extract_utf8(region)
-
-            # TODO parse the readable text to extract relevant data
 
             if "Temp" not in readable_text:
                 # Advance offset to avoid infinite loop
@@ -119,8 +113,6 @@ class LinkamDataReader:
 
         return LinkamDataFile(
             file=file_name,
-            # TODO extract date
-            # d=date,
             ramp=ramps,
             temp=temperatures,
             temp_limit=limits,
