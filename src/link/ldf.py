@@ -20,8 +20,6 @@ class LinkamDataFile:
 
     def __init__(self,
                  file: str,
-                 # TODO add datetime later if needed
-                 # d: datetime.date,
                  ramp: list[int],
                  temp: list[float],
                  temp_limit: list[float],
@@ -72,7 +70,7 @@ class LinkamDataFile:
         """ Analyzes raw images and extracts data """
 
         self.processed_images = []
-        self.data = [[] for _ in range(len(self.raw_images))]
+        self.data = [[] for _ in range(7)]
 
         for image in self.raw_images:
             analyzed_image, analyzed_data = Analysis.analyze_image(image)
@@ -103,7 +101,7 @@ class LinkamDataFile:
         return pd.DataFrame(columns)
 
 
-    def __repr__(self) -> str:
+    def data_summary(self) -> str:
         """ Creates summary of extracted data """
         output = f"\nAnalyzed Linkam Data File: {self.filepath}"
         output += f"\n    Number of frames: {len(self.raw_images)}"
