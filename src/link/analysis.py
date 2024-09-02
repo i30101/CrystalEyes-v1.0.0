@@ -20,7 +20,7 @@ from src.variables import Variables
 class Analysis:
     """ Image analyzer """
 
-    model = models.CellposeModel()
+    # model = models.CellposeModel()
 
     scale = Variables.DEFAULT_SCALE
 
@@ -60,9 +60,7 @@ class Analysis:
             area_px += len(contour)
             area_um += Analysis.px_to_um(area_px)
 
-            # draw filled contour with random transparent color
-            random_color = (np.random.randint(0, 255, size=3) + [100]).tolist()
-            cv2.drawContours(processed_image, [contour], -1, color=random_color, thickness=cv2.FILLED)
+            cv2.drawContours(processed_image, [contour], -1, color=(0, 0, 0, 100), thickness=cv2.FILLED)
 
         # number of contours
         num_contours = len(contours)
@@ -84,16 +82,18 @@ class Analysis:
     @staticmethod
     def get_contours(image: np.ndarray):
         """ Use Cellpose to extract largest contours """
-        print("Getting contours using Cellpose")
-        masks, _, _, _ = Analysis.model.eval(image, diameter=50, channels=[0, 0])
+        print("using cellpose")
+        model = models.Cellpose(gpu=False, model_type='cyto')
+        masks, _, _, _ = model.eval(image, diameter=50, channels=[0, 0])
         rois = list(masks)
         contour_points = [[] for _ in masks]
         for y, roi in enumerate(rois):
             for x, contour_num in enumerate(roi):
                 contour_points[contour_num].append([x, y])
 
-        # return contours that are sufficiently large
-        return [
-            np.array(point_list, dtype=np.int32).reshape(-1, 1, 2)
-            for point_list in contour_points[1:] if len(point_list) > 500
-        ]
+        contours = []
+        for point_list in contour_points[1 :]:
+            if len(point_list) > 500:
+                contours.append(np.array(point_list, dtype=np.int32).reshape((-1, 1, 2)))
+
+        return contours
