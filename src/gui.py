@@ -14,6 +14,8 @@ import sv_ttk
 
 import os
 from ctypes import windll
+import numpy as np
+from PIL import Image
 
 from src.link.analysis import Analysis
 from src.media.viewer import Viewer
@@ -103,7 +105,6 @@ class Gui:
         self.path_viewer = PathViewer(self.right)
         self.data_table = DataTable(self.right)
         self.data_graph = DataGraph(self.right, self.frame_changed)
-        # TODO maybe change size of data graph
         self.analyze_box = AnalyzeBox(self.right)
         # self.ramp_box = RampBox(self.right)
 
@@ -226,7 +227,7 @@ class Gui:
         self.data_graph.clear_graph()
         self.path_viewer.clear_filepath()
 
-        self.console.message("Media cleared")
+        self.console.update("Media cleared")
 
 
     def theme_updated(self):
@@ -251,8 +252,6 @@ class Gui:
         self.set_scale_entry(self.options.get_scale())
         self.set_px_entry(self.options.get_px())
         self.set_um_entry(self.options.get_um())
-
-        # TODO add more methods
 
         self.console.message("Settings reset to default")
 
@@ -280,7 +279,6 @@ class Gui:
             return
         new_scale = round(scale, 5)
         self.tab2.scale_input.set(new_scale)
-        # TODO update this
         Analysis.set_scale(float(self.tab2.scale_entry.get()))
 
 
@@ -367,26 +365,34 @@ class Gui:
             return
 
         if not self.linkam_data_file.processed_images:
-            self.analyze()
+            self.console.error("File not analyzed yet")
 
-        folder_directory = self.tab3.export_path.get() + self.linkam_data_file.filepath + "/"
+        export_directory = (self.tab3.export_path.get() + "/" +
+                            self.linkam_data_file.filepath[ : self.linkam_data_file.filepath.rfind(".ldf")] + "/")
+
+        # ensure the folder directory exists before writing
+        os.makedirs(export_directory, exist_ok=True)
 
         data_df = self.linkam_data_file.to_df()
-        data_df.to_excel(folder_directory)
+        data_df.to_excel(export_directory + self.linkam_data_file.filepath + ".xlsx", index=False)
 
         if self.tab3.raw_images.get():
             # export raw images to directory "raw"
-            raw_dir = os.path.join(self.tab3.export_path.get(), "raw")
+            raw_dir = os.path.join(export_directory, "raw")
             os.makedirs(raw_dir, exist_ok=True)
             for i, img in enumerate(self.linkam_data_file.raw_images):
-                img.save(os.path.join(raw_dir, f"raw_{i:04d}.png"))
+                pil_img = Image.fromarray(img)
+                pil_img.save(os.path.join(raw_dir, f"raw_{i:04d}.jpg"), "JPEG")
 
         if self.tab3.processed_images.get():
             # export processed images to directory "processed"
-            processed_dir = os.path.join(self.tab3.export_path.get(), "processed")
+            processed_dir = os.path.join(export_directory, "processed")
             os.makedirs(processed_dir, exist_ok=True)
             for i, img in enumerate(self.linkam_data_file.processed_images):
-                img.save(os.path.join(processed_dir, f"processed_{i:04d}.png"))
+                pil_img = Image.fromarray(img)
+                pil_img.save(os.path.join(processed_dir, f"processed_{i:04d}.jpg"), "JPEG")
+
+        self.console.update(f"Data export to {export_directory} successful")
 
 
 
@@ -420,10 +426,10 @@ class Gui:
             return
 
         start_frame = self.analyze_box.starting_frame.get()
-        end_frame = self.analyze_box.ending_frame.get()
+        end_frame = self.analyze_box.ending_frame.get() + 1
 
         if (start_frame < 0
-                or end_frame >= len(self.linkam_data_file.raw_images)
+                or end_frame > len(self.linkam_data_file.raw_images)
                 or start_frame == end_frame
                 or start_frame > end_frame ):
             self.console.error("Frame range out of bounds")
@@ -436,6 +442,5 @@ class Gui:
 
         self.linkam_data_file.analyze()
         self.media.show_media(self.linkam_data_file.processed_images)
-        self.console.message(self.linkam_data_file)
-
-
+        self.data_graph.update_graph(self.linkam_data_file.temperatures)
+        self.console.message(self.linkam_data_file.data_summary())
