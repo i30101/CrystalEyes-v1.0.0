@@ -30,8 +30,6 @@ class Console:
 
         self.console.bind("<<Modified>>", self.callback)
 
-
-        # TODO change this maybe
         self.nothing_outputted = True
         self.add_newline = False
 
