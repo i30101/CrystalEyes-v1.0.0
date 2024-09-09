@@ -1,5 +1,6 @@
 # CrystalEyes
 
+TODO update these
 ![version](https://img.shields.io/badge/release-v1.0.0-blue)
 ![python-versions](https://img.shields.io/badge/python-3.11_%7C_3.12_%7C_3.13-limegreen)
 ![cellpose-version](https://img.shields.io/badge/cellpose-4.0.6-red)
@@ -21,6 +22,13 @@ Version `1.0.0` introduces a new GUI and support for LDF files only. In contrast
 
 > [!WARNING]
 > Timestamp data is not available for this version. The app will not process timestamps from LDF files.
+
+
+## Changelog
+
+
+## Dependencies
+
 
 
 
