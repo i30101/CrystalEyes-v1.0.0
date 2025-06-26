@@ -19,16 +19,18 @@ class Options:
     """ Options saver and reader """
 
     def __init__(self):
-        # options filepath
-        self.OPTIONS_FILEPATH = "../data/options.json"
+        # options filepath (relative to project root)
+        self.OPTIONS_FILEPATH = str(Path(__file__).parent.parent.parent / "data" / "options.json")
 
         # default options {
         self.DEFAULT_OPTIONS = {
             "Theme": "light",
-            "DataSavePath": (str(Path.home()) + "\\Documents").replace("\\", "/"),
+            "ExportPath": (str(Path.home()) + "\\Documents").replace("\\", "/"),
             "Px": Variables.DEFAULT_PX,
             "Um": Variables.DEFAULT_UM,
             "Scale": Variables.DEFAULT_SCALE,
+            "SaveProcessed": 1,
+            "SaveRaw": 1
         }
 
         # read options
@@ -44,6 +46,7 @@ class Options:
 
     def write_options(self):
         """ Writes options to file """
+        Path(self.OPTIONS_FILEPATH).parent.mkdir(parents=True, exist_ok=True)
         with open(self.OPTIONS_FILEPATH, 'w') as file:
             json.dump(self.options, file, indent=4)
 
@@ -59,9 +62,9 @@ class Options:
         return self.options["Theme"]
 
 
-    def get_data_save_path(self) -> str:
+    def get_export_path(self) -> str:
         """ Returns the data save path """
-        return self.options["DataSavePath"]
+        return self.options["ExportPath"]
 
 
     def get_px(self) -> float:
@@ -79,18 +82,32 @@ class Options:
         return self.options["Scale"]
 
 
+    def get_processed_checkbox(self) -> int:
+        """ Returns preference for exporting processed images """
+        return self.options["SaveProcessed"]
+
+
+    def get_raw_checkbox(self) -> int:
+        """ Returns preference for exporting raw images """
+        return self.options["SaveRaw"]
+
+
     def set_theme(self, new_theme: str):
         """ Sets theme for the application """
         self.options["Theme"] = new_theme
         self.write_options()
 
 
-    def set_data_save_path(self, new_filepath: str):
+    def set_export_path(self, new_filepath: str):
         """ Sets path for where data is saved """
-        self.options["DataSavePath"] = new_filepath
+        self.options["ExportPath"] = new_filepath
 
 
-    # TODO add these methods to Gui
+    def set_scale(self, new_scale: float):
+        """ Sets scale """
+        self.options["Scale"] = new_scale
+
+
     def set_px(self, new_px: float):
         """ Sets pixel count """
         self.options["Px"] = new_px
@@ -99,3 +116,13 @@ class Options:
     def set_um(self, new_um: float):
         """ Sets um count """
         self.options["Um"] = new_um
+
+
+    def set_processed_checkbox(self, new_processed: bool):
+        """ Sets preference for saving processed images """
+        self.options["SaveProcessed"] = new_processed
+
+
+    def set_raw_checkbox(self, new_raw: bool):
+        """ Sets preference for saving raw images """
+        self.options["SaveRaw"] = new_raw

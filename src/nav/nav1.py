@@ -5,7 +5,7 @@ Andrew Kim
 
 Version 1.0.0
 
-Navigation Tab 1
+Navigation tab 1
 """
 
 
@@ -20,19 +20,15 @@ class Nav1(ttk.Frame):
     def __init__(self, root):
         super().__init__(root)
 
-
-        # TODO try removing row
-        self.row = ttk.Frame(self)
-        self.row.pack(fill='both', expand=True)
-
-        self.open_file_button = ttk.Button(self.row, text="Open File")
+        self.open_file_button = ttk.Button(self, text="Open File")
         self.open_file_button.grid(row=0, column=0, padx=Variables.PAD_NOPAD, pady=10)
 
-        self.clear_button = ttk.Button(self.row, text="Clear Media")
+        self.clear_button = ttk.Button(self, text="Clear Media")
         self.clear_button.grid(row=0, column=1, padx=Variables.PAD_NOPAD, pady=10)
 
-        self.theme_button = ttk.Button(self.row, text="Theme")
+        self.theme_button = ttk.Button(self, text="Change Theme")
         self.theme_button.grid(row=0, column=2, padx=Variables.PAD_NOPAD, pady=10)
 
-        self.reset_settings_button = ttk.Button(self.row, text="Reset Settings")
+        self.reset_settings_button = ttk.Button(self, text="Reset Settings")
         self.reset_settings_button.grid(row=0, column=3, padx=Variables.PAD_NOPAD, pady=10)
+

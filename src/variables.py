@@ -9,6 +9,9 @@ Global variables and constants
 """
 
 
+from pathlib import Path
+
+
 class Variables:
     """ Global variables and constants """
 
@@ -16,8 +19,8 @@ class Variables:
     APP_NAME = "CrystalEyes v1.0.0"
 
     """ File paths """
-    ICON_PATH = "assets/icon.png"
-    SPLASH_PATH = "assets/splash.png"
+    ICON_PATH = str(Path(__file__).parent.parent / "assets" / "icon.png")
+    SPLASH_PATH = str(Path(__file__).parent.parent / "assets" / "splash.png")
 
 
     """ GUI padding"""
@@ -62,14 +65,3 @@ class Variables:
     """ Options for images and video media"""
     IMAGE_OPTIONS = ["Area in px²", "Area in µm²", "Side ratios", "# of sides"]
     VIDEO_OPTIONS = ["# of objects", "Average area", "Total area", "Temperature", "# of sides"]
-
-
-    # TODO do these have to be fixed?
-    # TODO merge with options.py?
-
-    """ Filepath for image media export """
-    image_filepath = None
-
-
-    """ Filepath for video media export """
-    video_filepath = None
