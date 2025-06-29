@@ -22,6 +22,7 @@ import tkinter as tk
 
 from gui import Gui
 from src.components.splash import Splash
+from src.variables import Variables
 
 
 
@@ -31,8 +32,8 @@ def main():
     root = tk.Tk()
 
     # set app icon for the splash window
-    # icon = tk.PhotoImage(file='assets/icon.png', master=root)
-    # root.iconphoto(False, icon)
+    icon = tk.PhotoImage(file=Variables.ICON_PATH, master=root)
+    root.iconphoto(False, icon)
 
     splash = Splash(root)
 
@@ -43,8 +44,8 @@ def start():
     window = tk.Tk()
 
     # set up app icon for main window
-#     icon = tk.PhotoImage(file='assets/icon.png', master=window)
-#     window.iconphoto(False, icon)
+    icon = tk.PhotoImage(file=Variables.ICON_PATH, master=window)
+    window.iconphoto(False, icon)
 
     gui = Gui(window)
 

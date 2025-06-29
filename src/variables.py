@@ -12,7 +12,13 @@ Global variables and constants
 class Variables:
     """ Global variables and constants """
 
-    APP_NAME = "CrystalEyes v0.9.0"
+    """ App Name """
+    APP_NAME = "CrystalEyes v1.0.0"
+
+    """ File paths """
+    ICON_PATH = "assets/icon.png"
+    SPLASH_PATH = "assets/splash.png"
+
 
     """ GUI padding"""
     PAD_NOPAD = (10, 0)

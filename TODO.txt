@@ -1,6 +1,5 @@
 Project level
 TODO edit README
-TODO add new icon
 
 
 
@@ -11,6 +10,4 @@ TODO add setup script
 
 
 Component level
-
-TODO redesign splash screen
 TODO add graph for imported data

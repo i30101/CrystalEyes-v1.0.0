@@ -10,7 +10,7 @@ Graphical user interface for CrystalEyes app
 
 import tkinter as tk
 from tkinter import ttk, filedialog
-# import sv_ttk
+import sv_ttk
 
 from ctypes import windll
 
@@ -94,7 +94,8 @@ class Gui:
 
 
 
-        # TODO set theme
+        sv_ttk.set_theme(self.options.get_theme())
+
         self.root.after(100, lambda: self.root.state('zoomed'))
         # TODO add self.onclose
         # self.root.protocol("WM_DELETE_WINDOW", self.on_close)
