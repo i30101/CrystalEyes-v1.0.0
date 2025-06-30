@@ -95,7 +95,6 @@ class Gui:
 
         # ################ DATA VIEWER ################ #
         self.data_viewer_container = ttk.Frame(self.right)
-        # self.data_viewer_container.place(relwidth=Variables.RIGHT_WIDTH, relheight=0.5)
         self.data_viewer_container.pack(fill=tk.BOTH, expand=True)
         self.data_viewer = DataViewer(self.data_viewer_container)
 
