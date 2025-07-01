@@ -14,6 +14,7 @@ import sv_ttk
 
 from ctypes import windll
 
+from src.containers.viewer import Viewer
 from src.variables import Variables
 
 from src.nav.nav1 import Nav1
@@ -28,15 +29,10 @@ from src.components.pathviewer import PathViewer
 
 # containers
 
+from src.link.reader import LinkamDataReader
 
 
 windll.shcore.SetProcessDpiAwareness(1)
-
-
-
-
-
-
 
 
 
@@ -79,7 +75,8 @@ class Gui:
         # media panel
         self.media_frame = ttk.Frame(self.paned_window, height=1, padding=(0, 10))
         self.paned_window.add(self.media_frame, weight=10)
-
+        self.media = Viewer(self.media_frame, self.open_file)
+        self.media.clear_media()
 
         # console
         self.console_frame = ttk.Frame(self.paned_window, height=1)
@@ -188,10 +185,10 @@ class Gui:
             return
 
         # TODO call additional methods
+        LinkamDataReader.extract_data(filepath)
 
         # update console
-        self.console.message(f"'{filepath[: filepath.rindex('/')]} uploaded")
-
+        self.console.update(f"{filepath[filepath.rindex('/') + 1 : ]} uploaded")
 
     def clear_media(self):
         """ Clears media """
@@ -330,4 +327,5 @@ class Gui:
 
     def export_data(self):
         """ User wants to export data """
+        # TODO update this
         pass

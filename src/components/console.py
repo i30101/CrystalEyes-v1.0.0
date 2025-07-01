@@ -15,7 +15,10 @@ from tkinter import scrolledtext as st
 
 
 class Console:
+
     def __init__(self, root):
+        """ Debugging console """
+
         self.root = root
 
         self.clear_console_button = ttk.Button(self.root, text="Clear Console", width=12, command=self.clear)
@@ -27,6 +30,8 @@ class Console:
 
         self.console.bind("<<Modified>>", self.callback)
 
+
+        # TODO change this maybe
         self.nothing_outputted = True
         self.add_newline = False
 
@@ -36,6 +41,7 @@ class Console:
         self.console.tag_configure("blue", foreground="blue")
 
         self.console.configure(state=tk.DISABLED)
+
 
     def message(self, message: str, color: str="black"):
         self.console.configure(state=tk.NORMAL)

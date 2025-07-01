@@ -9,7 +9,110 @@ Reads LDF files
 """
 
 
+import os
+from datetime import datetime
+
+from src.link.ldf import LinkamDataFile
+
+
+def extract_utf8(data: bytes) -> str:
+    """ Extracts UTF-8 encoded string from bytes """
+    return ''.join(
+        chr(b) if 32 <= b < 127 else '' for b in data
+    )
+
+
+# JPEG start marker
+START_MARKER = b'\xff\xd8'
+
+# number of bytes to extract before the image
+BYTES_TO_EXTRACT = 1000
+
+
+
 class LinkamDataReader:
     """ Parses Linkam Data Files to extract images and data """
 
-    pass
+    @staticmethod
+    def extract_data(filepath: str) -> LinkamDataFile:
+        """ Extracts data from Linkam Data File """
+
+        file = f"{filepath[filepath.rindex('/') + 1 : ]} uploaded"
+
+
+
+        date_string = file[:10]
+        date = datetime.strptime(date_string, "%Y-%m-%d").date()
+        print(date)
+
+        offset = 0
+
+        with open(filepath, "rb") as file:
+            data = file.read()
+
+        temperatures = []
+        ramps = []
+        rates = []
+        limits = []
+
+        while offset < len(data):
+            start = data.find(START_MARKER, offset)
+            if start == -1:
+                break
+
+            extract_start = max(0, start - BYTES_TO_EXTRACT)
+            region = data[extract_start:start]
+
+            # convert to readable UTF-8
+            readable_text = extract_utf8(region)
+
+            # TODO parse the readable text to extract relevant data
+
+            if "Temp" not in readable_text:
+                continue
+
+            temp_index = readable_text.index("Temp ")
+            ramp_index = readable_text.index("Ramp Row ")
+            rate_index = readable_text.index("Rate ")
+            limit_index = readable_text.index("Limit ")
+
+            temperature = float(readable_text[temp_index + 5 : ramp_index - 2].strip())
+            ramp = int(readable_text[ramp_index + 9 : rate_index - 1].strip())
+            rate = float(readable_text[rate_index + 5 : limit_index - 6].strip())
+            limit_start = limit_index + 6
+            limit_str = ""
+            for i, c in enumerate(readable_text[limit_start:]):
+                if c.isalpha():
+                    break
+                if c == '-' and i != 0:
+                    break
+                if c.isdigit() or c == '.' or (c == '-' and i == 0):
+                    limit_str += c
+                elif c.strip() == "":
+                    continue
+                else:
+                    break
+            limit = float(limit_str.strip())
+
+            temperatures.append(temperature)
+            ramps.append(ramp)
+            rates.append(rate)
+            limits.append(limit)
+
+
+
+            end = data.find(b'\xff\xd9', start)
+            if end == -1:
+                break
+            offset = end + 2
+
+        return LinkamDataFile(
+            file=file,
+            # TODO extract date
+            d=date,
+            ramp=ramps,
+            temp=temperatures,
+            temp_limit=limits,
+            temp_rate=rates,
+            raw=None
+        )
