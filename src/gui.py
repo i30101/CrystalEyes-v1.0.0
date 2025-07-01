@@ -22,8 +22,9 @@ from src.nav.nav3 import Nav3
 
 # components
 from src.components.console import Console
-from src.components.dataviewer import DataViewer
+from src.components.datatable import DataTable
 from src.components.options import Options
+from src.components.pathviewer import PathViewer
 
 # containers
 
@@ -93,10 +94,16 @@ class Gui:
         self.right.pack(fill=tk.BOTH, expand=True, padx=(10, 20), pady=20)
 
 
+        # ################ PATH VIEWER ################ #
+        self.path_viewer_container = ttk.Frame(self.right)
+        self.path_viewer_container.pack(fill=tk.X, expand=False)
+        self.path_viewer = PathViewer(self.path_viewer_container)
+
+
         # ################ DATA VIEWER ################ #
         self.data_viewer_container = ttk.Frame(self.right)
         self.data_viewer_container.pack(fill=tk.BOTH, expand=True)
-        self.data_viewer = DataViewer(self.data_viewer_container)
+        self.data_viewer = DataTable(self.data_viewer_container)
 
 
         # TODO potentially add controls in between
@@ -214,7 +221,6 @@ class Gui:
         self.set_scale_entry(self.options.get_scale())
         self.set_px_entry(self.options.get_px())
         self.set_um_entry(self.options.get_um())
-
 
         # TODO add more methods
 

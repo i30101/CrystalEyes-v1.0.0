@@ -13,7 +13,6 @@ import tkinter as tk
 from tkinter import ttk
 
 
-
 from src.containers.container import MediaContainer
 
 

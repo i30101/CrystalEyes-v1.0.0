@@ -21,7 +21,8 @@ class Console:
         self.clear_console_button = ttk.Button(self.root, text="Clear Console", width=12, command=self.clear)
         self.clear_console_button.pack(fill=tk.Y, side=tk.LEFT, padx=(0, 20), pady=(10, 0))
 
-        self.console = st.ScrolledText(self.root, font=("Arial", 12), height=5)
+        # self.console = st.ScrolledText(self.root, font=("Arial", 12), height=5)
+        self.console = st.ScrolledText(self.root, font=("TkDefaultFont", 11), height=5)
         self.console.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
 
         self.console.bind("<<Modified>>", self.callback)
