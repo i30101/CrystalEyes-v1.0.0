@@ -7,6 +7,8 @@ Version 1.0.0
 """
 
 
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
 
@@ -16,7 +18,8 @@ class LinkamDataFile:
 
     def __init__(self,
                  file: str,
-                 d: str,
+                 # TODO add datetime later if needed
+                 # d: datetime.date,
                  ramp: list[int],
                  temp: list[float],
                  temp_limit: list[float],
@@ -24,7 +27,7 @@ class LinkamDataFile:
                  raw: list[np.ndarray]):
         """ Linkam Data File object """
         self.filepath = file
-        self.date = d
+#         self.date = d
         self.ramps = ramp
         self.temperatures = temp
         self.temperature_limits = temp_limit

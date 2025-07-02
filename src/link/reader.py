@@ -12,6 +12,9 @@ Reads LDF files
 import os
 from datetime import datetime
 
+import numpy as np
+import cv2
+
 from src.link.ldf import LinkamDataFile
 
 
@@ -37,15 +40,11 @@ class LinkamDataReader:
     def extract_data(filepath: str) -> LinkamDataFile:
         """ Extracts data from Linkam Data File """
 
-        file = f"{filepath[filepath.rindex('/') + 1 : ]} uploaded"
+        file_name = f"{filepath[filepath.rindex('/') + 1 : ]} uploaded"
 
-
-
-        date_string = file[:10]
-        date = datetime.strptime(date_string, "%Y-%m-%d").date()
-        print(date)
-
-        offset = 0
+        # TODO add later if used
+        # date_string = "".join(c if c.isdigit() else " " for c in file_name[ : 10]).strip().replace(" ", "-")
+        # date = datetime.strptime(date_string, "%m-%d-%y").date()
 
         with open(filepath, "rb") as file:
             data = file.read()
@@ -54,6 +53,9 @@ class LinkamDataReader:
         ramps = []
         rates = []
         limits = []
+        images = []
+
+        offset = 0
 
         while offset < len(data):
             start = data.find(START_MARKER, offset)
@@ -69,6 +71,8 @@ class LinkamDataReader:
             # TODO parse the readable text to extract relevant data
 
             if "Temp" not in readable_text:
+                # Advance offset to avoid infinite loop
+                offset = start + 2
                 continue
 
             temp_index = readable_text.index("Temp ")
@@ -99,20 +103,27 @@ class LinkamDataReader:
             rates.append(rate)
             limits.append(limit)
 
-
-
             end = data.find(b'\xff\xd9', start)
             if end == -1:
+                offset = start + 2
                 break
+
+            # Extract JPEG bytes and decode to np.ndarray
+            jpeg_bytes = data[start:end + 2]
+            img_array = np.frombuffer(jpeg_bytes, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            if img is not None:
+                images.append(img)
+
             offset = end + 2
 
         return LinkamDataFile(
-            file=file,
+            file=file_name,
             # TODO extract date
-            d=date,
+            # d=date,
             ramp=ramps,
             temp=temperatures,
             temp_limit=limits,
             temp_rate=rates,
-            raw=None
+            raw=images
         )

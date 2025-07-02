@@ -25,8 +25,6 @@ class DataTable:
         # create a bordered box
         self.box = ttk.LabelFrame(self.root, text="Frame Data", padding=(10, 10))
         self.box.grid(row=0, column=0, padx=10, pady=Variables.NOPAD_PAD, sticky="ew")
-
-        # Make the box expand horizontally
         self.root.grid_columnconfigure(0, weight=1)
 
         # configure grid layout

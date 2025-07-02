@@ -23,6 +23,7 @@ from src.nav.nav3 import Nav3
 
 # components
 from src.components.console import Console
+from src.components.datagraph import DataGraph
 from src.components.datatable import DataTable
 from src.components.options import Options
 from src.components.pathviewer import PathViewer
@@ -107,9 +108,9 @@ class Gui:
 
 
         # ################ DATA GRAPH ################ #
-        self.data_graph = ttk.Frame(self.right_column)
-        self.data_graph.place(rely=0.5, relwidth=Variables.RIGHT_WIDTH, relheight=0.5)
-        # TODO add data graph
+        self.data_graph_container = ttk.Frame(self.right)
+        self.data_graph_container.pack
+        self.data_graph = DataGraph(self.data_graph_container)
 
 
         self.config_event_entries()
@@ -117,7 +118,6 @@ class Gui:
         sv_ttk.set_theme(self.options.get_theme())
 
         # self.root.after(100, lambda: self.root.state('zoomed'))
-        # TODO add self.onclose
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
 
@@ -185,14 +185,18 @@ class Gui:
             return
 
         # TODO call additional methods
-        LinkamDataReader.extract_data(filepath)
+        self.linkam_data_file = LinkamDataReader.extract_data(filepath)
+
+        self.media.show_media(self.linkam_data_file.raw_images)
 
         # update console
         self.console.update(f"{filepath[filepath.rindex('/') + 1 : ]} uploaded")
 
+
     def clear_media(self):
         """ Clears media """
         # TODO call additional methods
+        self.media.clear_media()
         self.console.message("Media cleared")
 
 

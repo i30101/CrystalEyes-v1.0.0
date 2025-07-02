@@ -93,8 +93,39 @@ class MediaViewer(MediaContainer):
     # ################################ GENERAL METHODS ################################ #
 
     def update_frame(self, event=None):
-        """ Updates currently displayed frame to scale bar value"""
-        tk_image = ImageTk.PhotoImage(self.images[self.current_frame.get()])
+        """ updates currently displayed frame to scale bar value"""
+        frame = self.media[self.current_frame.get()]
+        if isinstance(frame, np.ndarray):
+            # convert numpy array to PIL Image
+            if frame.ndim == 2:
+                image = Image.fromarray(frame)
+            elif frame.ndim == 3:
+                if frame.shape[2] == 1:
+                    image = Image.fromarray(frame.squeeze(-1))
+                else:
+                    image = Image.fromarray(frame)
+            else:
+                raise ValueError("Unsupported image shape: {}".format(frame.shape))
+        else:
+            image = frame  # Assume already PIL Image
+
+        # get current label size
+        self.video_label.update_idletasks()
+        label_width = self.video_label.winfo_width()
+        label_height = self.video_label.winfo_height()
+
+        # if label size is not yet set, use default window size
+        if label_width <= 1 or label_height <= 1:
+            label_width = self.window_width if self.window_width > 1 else 400
+            label_height = self.window_height if self.window_height > 1 else 400
+
+        # resize image to fit inside label, preserving aspect ratio
+        img_width, img_height = image.size
+        scale = min(label_width / img_width, label_height / img_height)
+        new_size = (max(1, int(img_width * scale)), max(1, int(img_height * scale)))
+        resized_image = image.resize(new_size, Image.LANCZOS)
+
+        tk_image = ImageTk.PhotoImage(resized_image)
         self.video_label.config(image=tk_image)
         self.video_label.image = tk_image
 
