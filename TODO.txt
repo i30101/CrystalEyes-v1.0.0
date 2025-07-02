@@ -10,4 +10,5 @@ TODO add setup script
 
 
 Component level
-TODO add graph for imported data
+TODO add trimming ability
+TODO add analysis zone to data graph

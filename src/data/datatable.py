@@ -15,7 +15,6 @@ from tkinter import ttk
 from src.variables import Variables
 
 
-
 class DataTable:
     """ Data previewer """
 

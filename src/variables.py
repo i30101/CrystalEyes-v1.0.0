@@ -54,7 +54,7 @@ class Variables:
 
 
     """ Width of right panel """
-    RIGHT_WIDTH = 0.3
+    RIGHT_WIDTH = 1 - LEFT_WIDTH
 
 
     """ Image and video formats """

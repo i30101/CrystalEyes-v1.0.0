@@ -15,7 +15,7 @@ from PIL import Image, ImageTk
 
 import numpy as np
 
-from src.containers.container import MediaContainer
+from src.media.container import MediaContainer
 
 
 class MediaViewer(MediaContainer):

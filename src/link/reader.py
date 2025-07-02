@@ -40,7 +40,7 @@ class LinkamDataReader:
     def extract_data(filepath: str) -> LinkamDataFile:
         """ Extracts data from Linkam Data File """
 
-        file_name = f"{filepath[filepath.rindex('/') + 1 : ]} uploaded"
+        file_name = f"{filepath[filepath.rindex('/') + 1 : ]}"
 
         # TODO add later if used
         # date_string = "".join(c if c.isdigit() else " " for c in file_name[ : 10]).strip().replace(" ", "-")

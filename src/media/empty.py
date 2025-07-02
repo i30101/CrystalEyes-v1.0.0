@@ -13,7 +13,7 @@ import tkinter as tk
 from tkinter import ttk
 
 
-from src.containers.container import MediaContainer
+from src.media.container import MediaContainer
 
 
 class EmptyContainer(MediaContainer):

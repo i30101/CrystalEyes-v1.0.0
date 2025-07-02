@@ -11,10 +11,8 @@ Media manager
 
 import numpy as np
 
-from src.variables import Variables
-
-from src.containers.empty import EmptyContainer
-from src.containers.mediaviewer import MediaViewer
+from src.media.empty import EmptyContainer
+from src.media.mediaviewer import MediaViewer
 
 
 class Viewer:

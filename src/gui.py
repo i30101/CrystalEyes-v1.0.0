@@ -14,7 +14,7 @@ import sv_ttk
 
 from ctypes import windll
 
-from src.containers.viewer import Viewer
+from src.media.viewer import Viewer
 from src.variables import Variables
 
 from src.nav.nav1 import Nav1
@@ -23,10 +23,10 @@ from src.nav.nav3 import Nav3
 
 # components
 from src.components.console import Console
-from src.components.datagraph import DataGraph
-from src.components.datatable import DataTable
+from src.data.datagraph import DataGraph
+from src.data.datatable import DataTable
 from src.components.options import Options
-from src.components.pathviewer import PathViewer
+from src.data.pathviewer import PathViewer
 
 # containers
 
@@ -44,6 +44,8 @@ class Gui:
         self.root.title(Variables.APP_NAME)
 
         self.options = Options()
+
+        self.linkam_data_file = None
 
 
 
@@ -100,7 +102,7 @@ class Gui:
 
         # ################ DATA VIEWER ################ #
         self.data_viewer_container = ttk.Frame(self.right)
-        self.data_viewer_container.pack(fill=tk.BOTH, expand=True)
+        self.data_viewer_container.pack(fill=tk.BOTH, expand=False)
         self.data_viewer = DataTable(self.data_viewer_container)
 
 
@@ -109,7 +111,7 @@ class Gui:
 
         # ################ DATA GRAPH ################ #
         self.data_graph_container = ttk.Frame(self.right)
-        self.data_graph_container.pack
+        self.data_graph_container.pack(fill=tk.BOTH, expand=False)
         self.data_graph = DataGraph(self.data_graph_container)
 
 
@@ -185,18 +187,27 @@ class Gui:
             return
 
         # TODO call additional methods
+
         self.linkam_data_file = LinkamDataReader.extract_data(filepath)
 
         self.media.show_media(self.linkam_data_file.raw_images)
 
+        self.path_viewer.set_filepath(self.linkam_data_file.filepath)
+
+        self.data_graph.update_graph(self.linkam_data_file.temperatures)
+
         # update console
-        self.console.update(f"{filepath[filepath.rindex('/') + 1 : ]} uploaded")
+        self.console.update(f"{self.linkam_data_file.filepath} uploaded")
 
 
     def clear_media(self):
         """ Clears media """
         # TODO call additional methods
         self.media.clear_media()
+        self.data_viewer.clear_data()
+        self.data_graph.clear_graph()
+        self.path_viewer.clear_filepath()
+
         self.console.message("Media cleared")
 
 
