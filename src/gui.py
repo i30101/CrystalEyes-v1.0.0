@@ -23,7 +23,7 @@ from src.nav.nav3 import Nav3
 
 # components
 from src.components.console import Console
-from src.components.options import Options
+from src.options import Options
 
 # data boxes
 from src.data.pathviewer import PathViewer
@@ -49,12 +49,13 @@ class Gui:
 
         self.linkam_data_file = None
 
-
+        # ########################## MAIN PANED WINDOW ########################## #
+        self.main_paned_window = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
+        self.main_paned_window.pack(fill=tk.BOTH, expand=True)
 
         # ################################ LEFT COLUMN ################################ #
-
-        self.left_column = ttk.Frame(self.root)
-        self.left_column.place(relwidth=Variables.LEFT_WIDTH, relheight=1)
+        self.left_column = ttk.Frame(self.main_paned_window)
+        self.main_paned_window.add(self.left_column, weight=1)
         self.left = ttk.Frame(self.left_column)
         self.left.pack(fill=tk.BOTH, expand=True, padx=(20, 10), pady=20)
 
@@ -90,8 +91,8 @@ class Gui:
 
 
         # ################################ RIGHT COLUMN ################################ #
-        self.right_column = ttk.Frame(self.root)
-        self.right_column.place(relx=Variables.LEFT_WIDTH, relwidth=Variables.RIGHT_WIDTH, relheight=1)
+        self.right_column = ttk.Frame(self.main_paned_window)
+        self.main_paned_window.add(self.right_column, weight=1)
         self.right = ttk.Frame(self.right_column)
         self.right.pack(fill=tk.BOTH, expand=True, padx=(10, 20), pady=20)
 
@@ -100,6 +101,7 @@ class Gui:
         self.path_viewer = PathViewer(self.right)
         self.data_table = DataTable(self.right)
         self.data_graph = DataGraph(self.right, self.frame_changed)
+        # TODO maybe change size of data graph
         self.analyze_box = AnalyzeBox(self.right)
         self.ramp_box = RampBox(self.right)
 
@@ -158,7 +160,7 @@ class Gui:
         )
         self.data_table.frame_number.trace_add(
             'write',
-            lambda *_: self.frame_changed(self.data_table.frame_number.get())
+            self.frame_entry_updated
         )
 
 
@@ -358,16 +360,23 @@ class Gui:
 
     # ################################ DATA BOX METHODS ################################ #
 
-    # def frame_entry_updated(self, _1, _2, _3):
-    #     """ Callback for frame entry update """
-    #     try:
-    #         frame_number = int(self.data_table.frame_number.get())
-    #     except ValueError:
-    #         self.console.error("non-integer character in frame number input")
-    #         return
-    #
-    #     if frame_number < 0 or frame_number >= self.linkam_data_file.length:
-    #         self.console.error("frame number out of bounds")
-    #         return
-    #
-    #     self.frame_changed(0)
+    def frame_entry_updated(self, _1, _2, _3):
+        """ Callback for frame entry update """
+
+        if self.linkam_data_file is None:
+            return
+
+        try:
+            print(self.data_table.frame_number.get())
+            frame_number = int(self.data_table.frame_number.get())
+        except (ValueError, tk.TclError):
+            self.console.error("non-integer character in frame number input")
+            return
+
+
+
+        if frame_number < 0 or frame_number >= self.linkam_data_file.length:
+            self.console.error("frame number out of bounds")
+            return
+
+        self.frame_changed(self.data_table.frame_number.get())

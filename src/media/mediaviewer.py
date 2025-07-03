@@ -13,6 +13,8 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 
+from pathlib import Path
+
 import numpy as np
 
 from src.media.container import MediaContainer
@@ -28,8 +30,23 @@ class MediaViewer(MediaContainer):
         self.duration = 0
 
         # TODO change pause and play buttons
-        self.PAUSE = "⏸"
-        self.PLAY = "▶"
+        self.PAUSE = str(Path(__file__).parent.parent.parent / "assets" / "pause.png")
+        pause_img = Image.open(self.PAUSE)
+        self.pause_img_tk = ImageTk.PhotoImage(pause_img)
+
+        self.PLAY = str(Path(__file__).parent.parent.parent / "assets" / "play.png")
+        play_img = Image.open(self.PLAY)
+        self.play_img_tk = ImageTk.PhotoImage(play_img)
+
+        self.PREVIOUS = str(Path(__file__).parent.parent.parent / "assets" / "previous.png")
+        previous_img = Image.open(self.PREVIOUS)
+        self.previous_img_tk = ImageTk.PhotoImage(previous_img)
+
+
+        self.NEXT = str(Path(__file__).parent.parent.parent / "assets" / "next.png")
+        next_img = Image.open(self.NEXT)
+        self.next_img_tk = ImageTk.PhotoImage(next_img)
+
         self.DELAY = 100
         self.BUTTON_PADDING = 4
         self.DEFAULT_DURATION = 60
@@ -55,13 +72,13 @@ class MediaViewer(MediaContainer):
         self.video_controls_container = ttk.Frame(self.container)
         self.video_controls_container.pack(side=tk.BOTTOM, pady=(10, 0))
 
-        self.previous_frame_button = ttk.Button(self.video_controls_container, text="⏮", command=self.previous_frame)
+        self.previous_frame_button = ttk.Button(self.video_controls_container, image=self.previous_img_tk, command=self.previous_frame)
         self.previous_frame_button.grid(row=0, column=0, ipadx=self.BUTTON_PADDING, ipady=self.BUTTON_PADDING)
 
-        self.play_pause_button = ttk.Button(self.video_controls_container, text=self.PLAY, command=self.play_pause)
+        self.play_pause_button = ttk.Button(self.video_controls_container, image=self.play_img_tk, command=self.play_pause)
         self.play_pause_button.grid(row=0, column=1, ipadx=self.BUTTON_PADDING, ipady=self.BUTTON_PADDING, padx=10)
 
-        self.next_frame_button = ttk.Button(self.video_controls_container, text="⏭", command=self.next_frame)
+        self.next_frame_button = ttk.Button(self.video_controls_container, image=self.next_img_tk, command=self.next_frame)
         self.next_frame_button.grid(row=0, column=2, ipadx=self.BUTTON_PADDING, ipady=self.BUTTON_PADDING)
 
         self.current_frame.set(3)
@@ -137,10 +154,10 @@ class MediaViewer(MediaContainer):
         self.playing_now = not self.playing_now
 
         if self.playing_now:
-            self.play_pause_button.config(text=self.PAUSE)
+            self.play_pause_button.config(image=self.pause_img_tk)
             self.play_video()
         else:
-            self.play_pause_button.config(text=self.PLAY)
+            self.play_pause_button.config(image=self.play_img_tk)
 
 
     def play_video(self):

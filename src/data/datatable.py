@@ -69,7 +69,9 @@ class DataTable(DataBox):
 
     def set_data(self, frame_number: int, ramp: int, temperature: float, limit: float, rate: float):
         """ Sets the data in the entry boxes """
-        self.frame_number.set(frame_number)
+        # Only update frame_number if entry does not have focus
+        if self.frame_number_entry.focus_get() != self.frame_number_entry:
+            self.frame_number.set(frame_number)
         self.ramp.set(ramp)
         self.temperature.set(temperature)
         self.limit.set(limit)
