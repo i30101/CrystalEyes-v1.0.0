@@ -14,17 +14,13 @@ from tkinter import ttk
 
 from src.variables import Variables
 
+from src.data.databox import DataBox
 
-class DataTable:
+class DataTable(DataBox):
     """ Data previewer """
 
     def __init__(self, root):
-        self.root = root
-
-        # create a bordered box
-        self.box = ttk.LabelFrame(self.root, text="Frame Data", padding=(10, 10))
-        self.box.grid(row=0, column=0, padx=10, pady=Variables.NOPAD_PAD, sticky="ew")
-        self.root.grid_columnconfigure(0, weight=1)
+        super().__init__(root, "Frame Data")
 
         # configure grid layout
         self.box.grid_columnconfigure(0, weight=0)
@@ -36,8 +32,6 @@ class DataTable:
         self.ENTRY_WIDTH = 6
 
         # current frame number
-        # TODO make it so that when the frame number changes, other values are updated as well
-        # TODO do this in the gui
         self.frame_number = tk.IntVar()
         self.frame_number_label = ttk.Label(self.box, text="Frame number", width=self.LABEL_WIDTH)
         self.frame_number_label.grid(row=0, column=0, padx=0, pady=5, sticky="w")
@@ -82,7 +76,6 @@ class DataTable:
         self.rate.set(rate)
 
         # set all entries to readonly
-        self.frame_number_entry.config(state="readonly")
         self.ramp_entry.config(state="readonly")
         self.temperature_entry.config(state="readonly")
         self.limit_entry.config(state="readonly")
@@ -98,7 +91,6 @@ class DataTable:
         self.rate.set(0.0)
 
         # set all entries to readonly
-        self.frame_number_entry.config(state="readonly")
         self.ramp_entry.config(state="readonly")
         self.temperature_entry.config(state="readonly")
         self.limit_entry.config(state="readonly")

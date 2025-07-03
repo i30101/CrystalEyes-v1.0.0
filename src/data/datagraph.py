@@ -1,30 +1,28 @@
 """
+Andrew Kim
+
+3 July 2025
+
+Version 1.0.0
+
+Data graph for visualizing temperature
 """
 
 
-import tkinter as tk
-from tkinter import ttk
+from src.data.databox import DataBox
 
-from src.variables import Variables
-
-# Add matplotlib imports
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-class DataGraph:
+class DataGraph(DataBox):
     """ Data graph for visualizing temperature"""
 
-    def __init__(self, root, on_dot_click: callable = None):
-        self.root = root
+    def __init__(self, root, on_dot_click: callable):
+        super().__init__(root, "Temperature")
 
         # TODO see if this can be moved to gui
         self.on_dot_click = on_dot_click
-
-        # create a bordered box
-        self.box = ttk.LabelFrame(self.root, text="Temperature", padding=(10, 10))
-        self.box.grid(row=0, column=0, padx=10, pady=Variables.NOPAD_PAD, sticky="ew")
-        self.root.grid_columnconfigure(0, weight=1)
 
         # Matplotlib Figure and Canvas
         self.figure = Figure(figsize=(5, 3), dpi=80)
@@ -37,13 +35,10 @@ class DataGraph:
         self.dot_artists = []
 
         # Connect matplotlib pick event for dot clicks
-        self.figure.canvas.mpl_connect('pick_event', self.on_dot_click)
+        self.figure.canvas.mpl_connect('pick_event', self.on_canvas_click)
 
     def update_graph(self, temperature_data):
-        """
-        Update the graph with new temperature data.
-        temperature_data: list of floats (temperatures per frame)
-        """
+        """ Update the graph with new temperature data """
         self.clear_graph()
         if not temperature_data:
             return
@@ -60,14 +55,12 @@ class DataGraph:
         self.ax.plot(frames, temperature_data, color="gray", linewidth=2)
 
         # Plot dots with picker enabled
-        self.dot_artists = self.ax.scatter(frames, temperature_data, color="blue", edgecolors="black", s=40, picker=5)
+        self.dot_artists = self.ax.scatter(frames, temperature_data, color="blue", s=30, picker=5)
 
         # Set axis limits and labels
         self.ax.set_xlim(0, max(frames) if frames else 1)
         if temperature_data:
             self.ax.set_ylim(min(temperature_data), max(temperature_data))
-            self.ax.text(frames[0], max(temperature_data), f"Max {max(temperature_data):.1f}", va='bottom', ha='left')
-            self.ax.text(frames[0], min(temperature_data), f"Min {min(temperature_data):.1f}", va='top', ha='left')
 
         self.canvas.draw()
 
@@ -78,13 +71,11 @@ class DataGraph:
         self.temperature_data = []
         self.dot_artists = []
 
-    def _on_canvas_click(self, event):
-        """Handle click on canvas, check if a dot was clicked."""
-        for frame, temp, x, y, dot_id in self.data_points:
-            dx = event.x - x
-            dy = event.y - y
-            if dx * dx + dy * dy <= self.dot_radius * self.dot_radius:
-                if self.on_dot_click:
-                    self.on_dot_click(frame)
-                break
 
+    def on_canvas_click(self, event):
+        """ Handle click on canvas, check if a dot was clicked """
+        if hasattr(event, "ind") and event.ind is not None and len(event.ind) > 0:
+            idx = event.ind[0]
+            if 0 <= idx < len(self.temperature_data):
+                frame = idx
+                self.on_dot_click(int(frame))

@@ -23,12 +23,14 @@ from src.nav.nav3 import Nav3
 
 # components
 from src.components.console import Console
-from src.data.datagraph import DataGraph
-from src.data.datatable import DataTable
 from src.components.options import Options
-from src.data.pathviewer import PathViewer
 
-# containers
+# data boxes
+from src.data.pathviewer import PathViewer
+from src.data.datatable import DataTable
+from src.data.datagraph import DataGraph
+from src.data.analyze import AnalyzeBox
+from src.data.ramp import RampBox
 
 from src.link.reader import LinkamDataReader
 
@@ -94,25 +96,13 @@ class Gui:
         self.right.pack(fill=tk.BOTH, expand=True, padx=(10, 20), pady=20)
 
 
-        # ################ PATH VIEWER ################ #
-        self.path_viewer_container = ttk.Frame(self.right)
-        self.path_viewer_container.pack(fill=tk.X, expand=False)
-        self.path_viewer = PathViewer(self.path_viewer_container)
+        # ################ DATA BOXES ################ #
+        self.path_viewer = PathViewer(self.right)
+        self.data_table = DataTable(self.right)
+        self.data_graph = DataGraph(self.right, self.frame_changed)
+        self.analyze_box = AnalyzeBox(self.right)
+        self.ramp_box = RampBox(self.right)
 
-
-        # ################ DATA VIEWER ################ #
-        self.data_viewer_container = ttk.Frame(self.right)
-        self.data_viewer_container.pack(fill=tk.BOTH, expand=False)
-        self.data_viewer = DataTable(self.data_viewer_container)
-
-
-        # TODO potentially add controls in between
-
-
-        # ################ DATA GRAPH ################ #
-        self.data_graph_container = ttk.Frame(self.right)
-        self.data_graph_container.pack(fill=tk.BOTH, expand=False)
-        self.data_graph = DataGraph(self.data_graph_container)
 
 
         self.config_event_entries()
@@ -161,6 +151,16 @@ class Gui:
         )
         self.tab3.download_button.config(command=self.export_data)
 
+        # video configs
+        self.media.media_viewer.current_frame.trace_add(
+            'write',
+            lambda *_: self.frame_changed(self.media.media_viewer.current_frame.get())
+        )
+        self.data_table.frame_number.trace_add(
+            'write',
+            lambda *_: self.frame_changed(self.data_table.frame_number.get())
+        )
+
 
 
 
@@ -170,6 +170,16 @@ class Gui:
         """ What happens when the GUI window is closed """
         self.options.write_options()
         self.root.destroy()
+
+
+    def frame_changed(self, next_frame: int):
+        """ When the currently displayed frame changes """
+
+        if not isinstance(next_frame, int):
+            return
+
+        self.data_table.set_data(*self.linkam_data_file.get_data(next_frame))
+        self.media.media_viewer.to_frame(next_frame)
 
 
 
@@ -204,7 +214,7 @@ class Gui:
         """ Clears media """
         # TODO call additional methods
         self.media.clear_media()
-        self.data_viewer.clear_data()
+        self.data_table.clear_data()
         self.data_graph.clear_graph()
         self.path_viewer.clear_filepath()
 
@@ -344,3 +354,20 @@ class Gui:
         """ User wants to export data """
         # TODO update this
         pass
+
+
+    # ################################ DATA BOX METHODS ################################ #
+
+    # def frame_entry_updated(self, _1, _2, _3):
+    #     """ Callback for frame entry update """
+    #     try:
+    #         frame_number = int(self.data_table.frame_number.get())
+    #     except ValueError:
+    #         self.console.error("non-integer character in frame number input")
+    #         return
+    #
+    #     if frame_number < 0 or frame_number >= self.linkam_data_file.length:
+    #         self.console.error("frame number out of bounds")
+    #         return
+    #
+    #     self.frame_changed(0)

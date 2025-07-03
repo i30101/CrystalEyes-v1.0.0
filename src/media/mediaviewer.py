@@ -94,6 +94,8 @@ class MediaViewer(MediaContainer):
 
     def update_frame(self, event=None):
         """ updates currently displayed frame to scale bar value"""
+        if self.media is None or len(self.media) == 0:
+            return
         frame = self.media[self.current_frame.get()]
         if isinstance(frame, np.ndarray):
             # convert numpy array to PIL Image
@@ -158,6 +160,15 @@ class MediaViewer(MediaContainer):
         """ Changes image to previous frame """
         self.current_frame.set((self.current_frame.get() - 1) % self.duration)
         self.update_frame()
+
+
+    def to_frame(self, new_frame: int):
+        """ Changes image to specified frame number """
+        if 0 <= new_frame < self.duration:
+            self.current_frame.set(new_frame)
+            self.update_frame()
+        else:
+            raise ValueError(f"Frame number {new_frame} is out of bounds (0-{self.duration-1})")
 
 
     def reset_values(self):

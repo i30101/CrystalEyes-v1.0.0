@@ -14,17 +14,14 @@ from tkinter import ttk
 
 from src.variables import Variables
 
+from src.data.databox import DataBox
 
-class PathViewer:
+
+class PathViewer(DataBox):
     """ Filepath viewing box """
 
     def __init__(self, root):
-        self.root = root
-
-        # create a bordered box
-        self.box = ttk.LabelFrame(self.root, text="Opened file", padding=(10, 10))
-        self.box.grid(row=0, column=0, padx=10, pady=Variables.NOPAD_PAD, sticky="ew")
-        self.root.grid_columnconfigure(0, weight=1)
+        super().__init__(root, "Opened file")
 
         # configure grid layout
         self.box.grid_columnconfigure(0, weight=1)
