@@ -103,7 +103,7 @@ class Gui:
         self.data_graph = DataGraph(self.right, self.frame_changed)
         # TODO maybe change size of data graph
         self.analyze_box = AnalyzeBox(self.right)
-        self.ramp_box = RampBox(self.right)
+        # self.ramp_box = RampBox(self.right)
 
 
 
@@ -367,13 +367,10 @@ class Gui:
             return
 
         try:
-            print(self.data_table.frame_number.get())
             frame_number = int(self.data_table.frame_number.get())
         except (ValueError, tk.TclError):
             self.console.error("non-integer character in frame number input")
             return
-
-
 
         if frame_number < 0 or frame_number >= self.linkam_data_file.length:
             self.console.error("frame number out of bounds")
