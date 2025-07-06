@@ -31,4 +31,3 @@ class Nav1(ttk.Frame):
 
         self.reset_settings_button = ttk.Button(self, text="Reset Settings")
         self.reset_settings_button.grid(row=0, column=3, padx=Variables.PAD_NOPAD, pady=10)
-

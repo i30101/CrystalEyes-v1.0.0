@@ -47,6 +47,3 @@ class Nav2(ttk.Frame):
 
         self.reset_scale_button = ttk.Button(self, text="Reset")
         self.reset_scale_button.grid(row=0, column=7, padx=Variables.PAD_NOPAD, pady=Variables.PAD_NOPAD)
-
-
-
