@@ -45,10 +45,6 @@ class Variables:
     DEFAULT_SCALE = round(DEFAULT_UM / DEFAULT_PX, 5)
 
 
-    """ Default font """
-    # TODO maybe this needs updating?
-
-
     """ Width of left panel """
     LEFT_WIDTH = 0.6
 

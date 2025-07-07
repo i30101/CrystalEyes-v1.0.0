@@ -10,14 +10,11 @@ Analysis module for CrystalEyes
 
 import cv2
 import numpy as np
-# TODO find a way to not use pytesseract
-from datetime import datetime
+from cellpose import models
 
-from cellpose import models, io
 from src.variables import Variables
 
 
-# TODO update variables
 
 
 class Analysis:
@@ -28,35 +25,6 @@ class Analysis:
     scale = Variables.DEFAULT_SCALE
 
     # ################################ GENERAL METHODS ################################ #
-
-    @staticmethod
-    def average(data: list, r: int = -1) -> float:
-        """ Finds average of dataset """
-        avg = sum(data) / len(data)
-        return round(avg, r) if r > -1 else avg
-
-    @staticmethod
-    def total(data: list, r: int = -1) -> float:
-        """ Finds total of dataset """
-        tot = sum(data)
-        return round(tot, r) if r > -1 else tot
-
-    @staticmethod
-    def crop(image, xs: list, ys: list) -> np.ndarray:
-        """ Crops image to custom size """
-        return image[ys[0]: ys[1], xs[0]: xs[1]]
-
-    @staticmethod
-    def polygon_area(contour) -> float:
-        """ Finds area of contour polygon """
-        epsilon = 0.02 * cv2.arcLength(contour, True)
-        approx = cv2.approxPolyDP(contour, epsilon, True)
-        return cv2.contourArea(approx)
-
-    @staticmethod
-    def to_time(time: str) -> datetime:
-        """ Converts string into datetime object """
-        return datetime.strptime(time, "%H:%M:%S")
 
     @staticmethod
     def px_to_um(area_px: float, r: int = -1) -> float:
@@ -111,9 +79,6 @@ class Analysis:
                 num_contours
             ]
         )
-
-
-
 
 
     @staticmethod

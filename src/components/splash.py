@@ -43,7 +43,6 @@ class Splash:
             fill=255
         )
 
-        # # TODO add path to variables
         self.raw = Image.open(Variables.SPLASH_PATH).convert("RGBA")
         self.image = self.raw.resize((self.SPLASH_WIDTH, self.SPLASH_HEIGHT), Image.Resampling.LANCZOS)
         self.image.putalpha(mask)

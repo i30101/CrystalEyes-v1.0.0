@@ -21,7 +21,6 @@ class DataGraph(DataBox):
     def __init__(self, root, on_dot_click: callable):
         super().__init__(root, "Temperature")
 
-        # TODO see if this can be moved to gui
         self.on_dot_click = on_dot_click
 
         # Matplotlib Figure and Canvas
@@ -47,9 +46,8 @@ class DataGraph(DataBox):
         frames = list(range(len(temperature_data)))
 
         self.ax.clear()
-        self.ax.set_title("Temperature")
         self.ax.set_xlabel("Frame")
-        self.ax.set_ylabel("Temp")
+        self.ax.set_ylabel("Temp (°C)")
 
         # Plot line
         self.ax.plot(frames, temperature_data, color="gray", linewidth=2)

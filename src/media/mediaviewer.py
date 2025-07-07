@@ -29,7 +29,6 @@ class MediaViewer(MediaContainer):
         self.media = None
         self.duration = 0
 
-        # TODO change pause and play buttons
         self.PAUSE = str(Path(__file__).parent.parent.parent / "assets" / "pause.png")
         pause_img = Image.open(self.PAUSE)
         self.pause_img_tk = ImageTk.PhotoImage(pause_img)
@@ -53,7 +52,6 @@ class MediaViewer(MediaContainer):
 
         self.playing_now = False
 
-        # TODO see if this can be switched to ttk
         self.video_label = tk.Label(self.container)
 
         # video timeline container
@@ -97,8 +95,6 @@ class MediaViewer(MediaContainer):
         self.reset_values()
 
         self.media = media
-
-        # TODO conversion may be necessary
 
         self.duration = len(self.media)
 

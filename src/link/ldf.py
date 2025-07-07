@@ -55,8 +55,6 @@ class LinkamDataFile:
 
     def trim(self, start: int, end: int) -> 'LinkamDataFile':
         """ Trims the data file to a specific range of frames """
-        if start < 0 or end >= len(self.raw_images) or start >= end:
-            raise ValueError("Invalid start or end frame numbers.")
 
         trimmed_file = LinkamDataFile(
             file=self.filepath,
@@ -78,7 +76,7 @@ class LinkamDataFile:
 
         for image in self.raw_images:
             analyzed_image, analyzed_data = Analysis.analyze_image(image)
-
+            print("image analyzed")
             # append processed image
             self.processed_images.append(analyzed_image)
 
@@ -107,7 +105,7 @@ class LinkamDataFile:
 
     def __repr__(self) -> str:
         """ Creates summary of extracted data """
-        output = f"\nLinkam Data File: {self.filepath}"
+        output = f"\nAnalyzed Linkam Data File: {self.filepath}"
         output += f"\n    Number of frames: {len(self.raw_images)}"
         output += f"\n    Ending temperature: {self.temperatures[-1]} °C"
         output += f"\n    Temperature ramp: {self.ramps[0]} °C/min"

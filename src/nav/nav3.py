@@ -28,7 +28,7 @@ class Nav3(ttk.Frame):
         self.browse_button.grid(row=0, column=1, padx=Variables.PAD_NOPAD, pady=10)
 
         self.export_path = tk.StringVar()
-        self.export_entry = ttk.Entry(self, textvariable=self.export_path, width=40)
+        self.export_entry = ttk.Entry(self, textvariable=self.export_path, width=30)
         self.export_entry.grid(row=0, column=2, padx=Variables.PAD_NOPAD, pady=10)
 
         self.processed_images = tk.IntVar()

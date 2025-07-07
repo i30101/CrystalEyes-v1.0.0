@@ -12,8 +12,10 @@ import tkinter as tk
 from tkinter import ttk, filedialog
 import sv_ttk
 
+import os
 from ctypes import windll
 
+from src.link.analysis import Analysis
 from src.media.viewer import Viewer
 from src.variables import Variables
 
@@ -204,8 +206,6 @@ class Gui:
         if not filepath:
             return
 
-        # TODO call additional methods
-
         self.linkam_data_file = LinkamDataReader.extract_data(filepath)
 
         self.media.show_media(self.linkam_data_file.raw_images)
@@ -220,7 +220,7 @@ class Gui:
 
     def clear_media(self):
         """ Clears media """
-        # TODO call additional methods
+        self.linkam_data_file = None
         self.media.clear_media()
         self.data_table.clear_data()
         self.data_graph.clear_graph()
@@ -281,7 +281,7 @@ class Gui:
         new_scale = round(scale, 5)
         self.tab2.scale_input.set(new_scale)
         # TODO update this
-        # Analysis.set_scale(float(self.tab2.scale_entry.get()))
+        Analysis.set_scale(float(self.tab2.scale_entry.get()))
 
 
     def set_px_entry(self, px: float):
@@ -311,6 +311,7 @@ class Gui:
             return
         self.set_px_entry(inputs[2] / inputs[0])
         self.options.set_scale(inputs[0])
+        Analysis.set_scale(inputs[0])
 
 
     def px_entry_updated(self, _1, _2, _3):
@@ -360,8 +361,34 @@ class Gui:
 
     def export_data(self):
         """ User wants to export data """
-        # TODO update this
-        pass
+
+        if self.linkam_data_file is None:
+            self.console.error("No LDF file loaded")
+            return
+
+        if not self.linkam_data_file.processed_images:
+            self.analyze()
+
+        folder_directory = self.tab3.export_path.get() + self.linkam_data_file.filepath + "/"
+
+        data_df = self.linkam_data_file.to_df()
+        data_df.to_excel(folder_directory)
+
+        if self.tab3.raw_images.get():
+            # export raw images to directory "raw"
+            raw_dir = os.path.join(self.tab3.export_path.get(), "raw")
+            os.makedirs(raw_dir, exist_ok=True)
+            for i, img in enumerate(self.linkam_data_file.raw_images):
+                img.save(os.path.join(raw_dir, f"raw_{i:04d}.png"))
+
+        if self.tab3.processed_images.get():
+            # export processed images to directory "processed"
+            processed_dir = os.path.join(self.tab3.export_path.get(), "processed")
+            os.makedirs(processed_dir, exist_ok=True)
+            for i, img in enumerate(self.linkam_data_file.processed_images):
+                img.save(os.path.join(processed_dir, f"processed_{i:04d}.png"))
+
+
 
 
     # ################################ DATA BOX METHODS ################################ #
@@ -378,7 +405,7 @@ class Gui:
             self.console.error("non-integer character in frame number input")
             return
 
-        if frame_number < 0 or frame_number >= self.linkam_data_file.length:
+        if frame_number < 0 or frame_number >= len(self.linkam_data_file.raw_images):
             self.console.error("frame number out of bounds")
             return
 
@@ -392,11 +419,23 @@ class Gui:
             self.console.error("No LDF file loaded")
             return
 
+        start_frame = self.analyze_box.starting_frame.get()
+        end_frame = self.analyze_box.ending_frame.get()
+
+        if (start_frame < 0
+                or end_frame >= len(self.linkam_data_file.raw_images)
+                or start_frame == end_frame
+                or start_frame > end_frame ):
+            self.console.error("Frame range out of bounds")
+            return
+
         self.linkam_data_file = self.linkam_data_file.trim(
-            self.analyze_box.starting_frame.get(),
-            self.analyze_box.ending_frame.get()
+            start_frame,
+            end_frame
         )
 
-
+        self.linkam_data_file.analyze()
+        self.media.show_media(self.linkam_data_file.processed_images)
+        self.console.message(self.linkam_data_file)
 
 

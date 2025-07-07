@@ -2,14 +2,10 @@ Project level
 TODO edit README
 
 
-
-
 App level
 TODO add setup script
 
 
-
 Component level
-TODO add trimming ability
 TODO add analysis zone to data graph
 
