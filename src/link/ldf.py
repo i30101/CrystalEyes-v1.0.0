@@ -12,6 +12,8 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
+from src.link.analysis import Analysis
+
 
 class LinkamDataFile:
     """ Linkam Data File object """
@@ -27,16 +29,11 @@ class LinkamDataFile:
                  raw: list[np.ndarray]):
         """ Linkam Data File object """
         self.filepath = file
-#         self.date = d
+        # self.date = d
         self.ramps = ramp
         self.temperatures = temp
         self.temperature_limits = temp_limit
         self.temperature_rates = temp_rate
-
-        # calculate beforehand
-        # TODO might want to remove if not needed
-        self.length = len(ramp)
-        self.frame_numbers = list(range(self.length))
 
         self.raw_images = raw
 
@@ -56,15 +53,62 @@ class LinkamDataFile:
         )
 
 
-    def dataset_summary(self) -> str:
-        """ Creates summary for analyzed dataset """
-        # TODO make summary
-        return str(self.length)
+    def trim(self, start: int, end: int) -> 'LinkamDataFile':
+        """ Trims the data file to a specific range of frames """
+        if start < 0 or end >= len(self.raw_images) or start >= end:
+            raise ValueError("Invalid start or end frame numbers.")
+
+        trimmed_file = LinkamDataFile(
+            file=self.filepath,
+            ramp=self.ramps[start:end],
+            temp=self.temperatures[start:end],
+            temp_limit=self.temperature_limits[start:end],
+            temp_rate=self.temperature_rates[start:end],
+            raw=self.raw_images[start:end]
+        )
+
+        return trimmed_file
+
+
+    def analyze(self) -> None:
+        """ Analyzes raw images and extracts data """
+
+        self.processed_images = []
+        self.data = [[] for _ in range(len(self.raw_images))]
+
+        for image in self.raw_images:
+            analyzed_image, analyzed_data = Analysis.analyze_image(image)
+
+            # append processed image
+            self.processed_images.append(analyzed_image)
+
+            for i, variable in enumerate(analyzed_data):
+                self.data[i].append(variable)
 
 
     def to_df(self) -> pd.DataFrame:
-        """ Converts data to DataFrame """
-        # TODO make DataFrame
-        # TODO figure out a good way to format
-        self.data = 0
-        return pd.DataFrame(None)
+        """ Converts analyzed data to DataFrame (one row per frame) """
+        columns = {
+            "Frame number": list(range(1, len(self.raw_images) + 1)),
+            "Temperature (°C)": self.temperatures,
+            "Temperature limit (°C)": self.temperature_limits,
+            "Temperature rate (°C/min)": self.temperature_rates,
+            "Ramp number": self.ramps,
+            "Average area (px²)": self.data[0],
+            "Average area (µm²)": self.data[1],
+            "Total area (px²)": self.data[2],
+            "Total area (µm²)": self.data[3],
+            "Density (crystals/µm²)": self.data[4],
+            "Coverage (%)": self.data[5],
+            "Number of contours": self.data[6]
+        }
+        return pd.DataFrame(columns)
+
+
+    def __repr__(self) -> str:
+        """ Creates summary of extracted data """
+        output = f"\nLinkam Data File: {self.filepath}"
+        output += f"\n    Number of frames: {len(self.raw_images)}"
+        output += f"\n    Ending temperature: {self.temperatures[-1]} °C"
+        output += f"\n    Temperature ramp: {self.ramps[0]} °C/min"
+        return output

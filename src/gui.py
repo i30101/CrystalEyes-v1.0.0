@@ -106,10 +106,15 @@ class Gui:
         # self.ramp_box = RampBox(self.right)
 
 
-
         self.config_event_entries()
 
         sv_ttk.set_theme(self.options.get_theme())
+
+        # Set initial pane sizes based on LEFT_WIDTH and RIGHT_WIDTH
+        self.root.update_idletasks()
+        total_width = self.root.winfo_width()
+        left_width = int(total_width * Variables.LEFT_WIDTH)
+        self.main_paned_window.sashpos(0, left_width)
 
         # self.root.after(100, lambda: self.root.state('zoomed'))
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -153,7 +158,7 @@ class Gui:
         )
         self.tab3.download_button.config(command=self.export_data)
 
-        # video configs
+        # data table configs
         self.media.media_viewer.current_frame.trace_add(
             'write',
             lambda *_: self.frame_changed(self.media.media_viewer.current_frame.get())
@@ -162,6 +167,7 @@ class Gui:
             'write',
             self.frame_entry_updated
         )
+        self.analyze_box.analyze_button.config(command=self.analyze)
 
 
 
@@ -377,3 +383,20 @@ class Gui:
             return
 
         self.frame_changed(self.data_table.frame_number.get())
+
+
+    def analyze(self):
+        """ User wants to analyze LDF file """
+
+        if self.linkam_data_file is None:
+            self.console.error("No LDF file loaded")
+            return
+
+        self.linkam_data_file = self.linkam_data_file.trim(
+            self.analyze_box.starting_frame.get(),
+            self.analyze_box.ending_frame.get()
+        )
+
+
+
+

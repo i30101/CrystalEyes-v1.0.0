@@ -50,7 +50,7 @@ class Variables:
 
 
     """ Width of left panel """
-    LEFT_WIDTH = 0.7
+    LEFT_WIDTH = 0.6
 
 
     """ Width of right panel """
