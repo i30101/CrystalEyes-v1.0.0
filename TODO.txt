@@ -4,10 +4,3 @@ TODO edit README
 
 App level
 TODO add setup script
-
-
-Component level
-TODO fix console whitespaces
-
-Analysis
-TODO find how elliptical a contour is
