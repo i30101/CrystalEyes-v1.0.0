@@ -12,8 +12,6 @@ GUI containers
 import tkinter as tk
 from tkinter import ttk
 
-import numpy as np
-
 
 class MediaContainer:
     """ General class for image container types """

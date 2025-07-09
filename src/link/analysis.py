@@ -20,17 +20,15 @@ from src.variables import Variables
 class Analysis:
     """ Image analyzer """
 
-    # model = models.CellposeModel()
-
     scale = Variables.DEFAULT_SCALE
 
     # ################################ GENERAL METHODS ################################ #
 
     @staticmethod
-    def px_to_um(area_px: float, r: int = -1) -> float:
+    def px_to_um(area_px: float) -> float:
         """ Converts an area in square pixels to square micrometers """
         area = area_px * (Analysis.scale ** 2)
-        return round(area, r) if r > -1 else area
+        return area
 
     @staticmethod
     def set_scale(new_scale: float):
@@ -47,7 +45,7 @@ class Analysis:
         processed_image = image.copy()
 
         # calculate area of image
-        image_area_um = Analysis.px_to_um(len(image)) * Analysis.px_to_um(len(image[0]))
+        image_area_um = Analysis.px_to_um(len(image) * len(image[0]))
 
         contours = Analysis.get_contours(image)
 
@@ -58,7 +56,7 @@ class Analysis:
         for contour in contours:
             # calculate areas
             area_px += len(contour)
-            area_um += Analysis.px_to_um(area_px)
+            area_um += Analysis.px_to_um(len(contour))
 
             cv2.drawContours(processed_image, [contour], -1, color=(0, 0, 0, 100), thickness=cv2.FILLED)
 
@@ -82,7 +80,6 @@ class Analysis:
     @staticmethod
     def get_contours(image: np.ndarray):
         """ Use Cellpose to extract largest contours """
-        print("using cellpose")
         model = models.Cellpose(gpu=False, model_type='cyto')
         masks, _, _, _ = model.eval(image, diameter=50, channels=[0, 0])
         rois = list(masks)

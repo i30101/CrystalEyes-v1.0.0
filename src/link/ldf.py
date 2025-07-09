@@ -7,7 +7,7 @@ Version 1.0.0
 """
 
 
-from datetime import datetime
+import time
 
 import numpy as np
 import pandas as pd
@@ -27,7 +27,6 @@ class LinkamDataFile:
                  raw: list[np.ndarray]):
         """ Linkam Data File object """
         self.filepath = file
-        # self.date = d
         self.ramps = ramp
         self.temperatures = temp
         self.temperature_limits = temp_limit
@@ -44,10 +43,11 @@ class LinkamDataFile:
         """ Returns data in tuple form for given frame number """
         return (
             frame_number,
-            self.ramps[frame_number],
+            len(self.raw_images),
             self.temperatures[frame_number],
             self.temperature_limits[frame_number],
-            self.temperature_rates[frame_number]
+            self.temperature_rates[frame_number],
+            self.ramps[frame_number]
         )
 
 
@@ -73,8 +73,11 @@ class LinkamDataFile:
         self.data = [[] for _ in range(7)]
 
         for image in self.raw_images:
+            t0 = time.time()
             analyzed_image, analyzed_data = Analysis.analyze_image(image)
-            print("image analyzed")
+            t1 = time.time()
+            print(f"Image analyzed in {t1 - t0:.3f} seconds")
+
             # append processed image
             self.processed_images.append(analyzed_image)
 

@@ -20,7 +20,7 @@ class Options:
 
     def __init__(self):
         # options filepath (relative to project root)
-        self.OPTIONS_FILEPATH = str(Path(__file__).parent.parent.parent / "data" / "options.json")
+        self.OPTIONS_FILEPATH = str(Path(__file__).parent.parent / "data" / "options.json")
 
         # default options {
         self.DEFAULT_OPTIONS = {
@@ -30,7 +30,8 @@ class Options:
             "Um": Variables.DEFAULT_UM,
             "Scale": Variables.DEFAULT_SCALE,
             "SaveProcessed": 1,
-            "SaveRaw": 1
+            "SaveRaw": 1,
+            "OpenFullscreen": 0
         }
 
         # read options
@@ -91,6 +92,10 @@ class Options:
         """ Returns preference for exporting raw images """
         return self.options["SaveRaw"]
 
+    def get_open_fullscreen(self) -> int:
+        """ Returns preference for opening in fullscreen """
+        return self.options.get("OpenFullscreen", 0)
+
 
     def set_theme(self, new_theme: str):
         """ Sets theme for the application """
@@ -126,3 +131,8 @@ class Options:
     def set_raw_checkbox(self, new_raw: bool):
         """ Sets preference for saving raw images """
         self.options["SaveRaw"] = new_raw
+
+    def set_open_fullscreen(self, new_fullscreen: bool):
+        """ Sets preference for opening in fullscreen """
+        self.options["OpenFullscreen"] = new_fullscreen
+        self.write_options()
