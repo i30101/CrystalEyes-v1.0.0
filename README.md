@@ -1,4 +1,4 @@
-[CrystalEyes Splash Page](assets/splash.png)
+![CrystalEyes Splash Page](assets/splash.png)
 
 # CrystalEyes
 
