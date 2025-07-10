@@ -1,4 +1,4 @@
-<img src="/assets/splash.png" width="250" title="cellpose" alt="cellpose" align="right">
+<img src="/assets/splash.png" width="250" title="cellpose" alt="cellpose" align="right" vspace="50">
 
 
 # CrystalEyes
