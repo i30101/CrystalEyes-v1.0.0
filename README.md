@@ -1,7 +1,9 @@
+# <p> <b>Cellpose</b></p>
+
+
 <img src="/assets/splash.png" width="250" title="cellpose" alt="cellpose" align="right" vspace="50">
 
 
-# CrystalEyes
 
 ![version](https://img.shields.io/badge/release-v1.2.0-blue)
 ![python-versions](https://img.shields.io/badge/python-3.9_%7C_3.10_%7C_3.11_%7C_3.12-limegreen)
