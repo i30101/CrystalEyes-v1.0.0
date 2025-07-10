@@ -28,14 +28,14 @@ class Nav3(ttk.Frame):
         self.browse_button.grid(row=0, column=1, padx=Variables.PAD_NOPAD, pady=10)
 
         self.export_path = tk.StringVar()
-        self.export_entry = ttk.Entry(self, textvariable=self.export_path, width=30)
+        self.export_entry = ttk.Entry(self, textvariable=self.export_path, width=38)
         self.export_entry.grid(row=0, column=2, padx=Variables.PAD_NOPAD, pady=10)
 
         self.processed_images = tk.IntVar()
         self.processed_checkbox = ttk.Checkbutton(
             self,
             variable=self.processed_images,
-            text="Save processed images",
+            text="Save processed",
             onvalue=1, offvalue=0
         )
         self.processed_checkbox.grid(row=0, column=3, padx=Variables.PAD_NOPAD, pady=10)
