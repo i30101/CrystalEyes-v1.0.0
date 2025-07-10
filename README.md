@@ -1,4 +1,5 @@
-![CrystalEyes Splash Page](assets/splash.png)
+<img src="/assets/splash.png" width="250" title="cellpose" alt="cellpose" align="right">
+
 
 # CrystalEyes
 
