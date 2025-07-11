@@ -385,8 +385,13 @@ class Gui:
         # ensure the folder directory exists before writing
         os.makedirs(export_directory, exist_ok=True)
 
+        # export analysis data
         data_df = self.linkam_data_file.to_df()
         data_df.to_excel(export_directory + self.linkam_data_file.filepath + ".xlsx", index=False)
+
+        # export
+        areas_df = self.linkam_data_file.area_to_df()
+        areas_df.to_excel(export_directory + self.linkam_data_file.filepath + "_areas.xlsx", index=False)
 
         if self.nav3.raw_images.get():
             # export raw images to directory "raw"

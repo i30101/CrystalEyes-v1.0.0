@@ -1,7 +1,7 @@
 # <p> <b>Cellpose</b></p>
 
 
-<img src="/assets/splash.png" width="250" title="cellpose" alt="cellpose" align="right" vspace="50">
+<img src="/assets/splash.png" width="300" title="cellpose" alt="cellpose" align="right" vspace="50">
 
 
 
@@ -34,9 +34,13 @@ Version `1.0.0` introduces a new GUI and support for LDF files only. In contrast
 > Timestamp data is not available for this version. The app will not process timestamps from LDF files. The duration between each frame defaults to one minute.
 
 ### Version 1.2.0: what's new
+
+This is the latest and fully functional version of CrystalEyes. Previous versions of CrystalEyes are in beta and not optimized for performance or user experience. The features newly added in this version are:
+
 - Extraction of additional variables (see below for full list)
 - Fixed debugging console
 - Data boxes to quickly view temperature / rate / limit data along with interactive temperature graph
+- Optimized data analysis and computer vision algorithms; average compute time on test machine (see below) ranges from 12-30 seconds, depending on the number of shapes present in a sample
 
 ### Full Release Schedule
 
@@ -58,7 +62,7 @@ Unfortunately, CrystalEyes `v1.2.0` has highly specific dependencies. Most criti
 
 CrystalEyes `1.2.0` was primarily tested on a system with 32 GB RAM with an integrated Intel processor/graphics chip (the graphics card was not used). Expect 1.8-2.5 GB of RAM use during operation; CPU usage will spike for each frame analysis as well.
 
-Microsoft's Redistributable C++ Compiler (often installed through [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/?q=build+tools)) may be required to install NumPy `1.26`. If you are unable to download the C++ compiler, consider using an alternate Python interpreter and compiler (such as Miniconda). 
+Microsoft's Redistributable C++ Compiler (often installed through [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/?q=build+tools)) may be required to install NumPy `1.26`. If you are unable to download the C++ compiler, consider using an alternate Python interpreter and package manager (such as Miniconda). 
 
 > [!NOTE]
 > Python version `3.10.13` along with NumPy version `1.26.3` were used during testing, along with Miniconda3 as the interpreter.

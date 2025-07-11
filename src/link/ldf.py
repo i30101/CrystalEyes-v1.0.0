@@ -8,7 +8,6 @@ Version 1.0.0
 
 
 import time
-
 import numpy as np
 import pandas as pd
 
@@ -41,6 +40,7 @@ class LinkamDataFile:
         # to be set after processing
         self.processed_images = None
         self.data = None
+        self.image_areas = None
 
 
     def get_data(self, frame_number: int) -> tuple:
@@ -75,10 +75,11 @@ class LinkamDataFile:
 
         self.processed_images = []
         self.data = [[] for _ in range(8)]
+        self.image_areas = []
 
         analyzed_times = []
 
-        for image in self.raw_images:
+        for i, image in enumerate(self.raw_images):
             t0 = time.time()
             analyzed_image, analyzed_data = Analysis.analyze_image(image)
             t1 = time.time()
@@ -88,8 +89,19 @@ class LinkamDataFile:
             # append processed image
             self.processed_images.append(analyzed_image)
 
-            for i, variable in enumerate(analyzed_data):
+            for variable in enumerate(analyzed_data):
+                if i == len(analyzed_data) - 1:
+                    continue
+
                 self.data[i].append(variable)
+
+            for area in analyzed_data[8]:
+                self.image_areas.append({
+                    "frame": i + 1,
+                    "area_px": area,
+                })
+
+
 
         # find rate of area change over time
         average_area_um = self.data[1]
@@ -126,6 +138,11 @@ class LinkamDataFile:
             "Duration of analysis (s)": self.data[9]
         }
         return pd.DataFrame(columns)
+
+
+    def area_to_df(self) -> pd.DataFrame:
+        """ Converts image areas to Dataframe (one row per area) """
+        return pd.DataFrame(self.image_areas)
 
 
     def data_summary(self) -> str:

@@ -7,8 +7,9 @@ Version 1.0.0
 
 Analysis module for CrystalEyes
 """
-import math
 
+
+import math
 import cv2
 import numpy as np
 from cellpose import models
@@ -50,17 +51,15 @@ class Analysis:
 
         contours = Analysis.get_contours(image)
 
-        # list of areas of contours
-        area_px = 0
-        area_um = 0
+        # area list in px²
+        areas_px = []
 
         # ratio sum
         ratios_sum = 0
 
         for contour in contours:
             # calculate areas
-            area_px += len(contour)
-            area_um += Analysis.px_to_um(len(contour))
+            areas_px.append(len(contour))
 
             # find rectangle bounding box and side ratio
             rect = cv2.minAreaRect(contour)
@@ -70,22 +69,31 @@ class Analysis:
             ratio = sides[0] / sides[1]
             ratios_sum += ratio
 
+            # draw contour
             cv2.drawContours(processed_image, [contour], -1, color=(0, 0, 0, 100), thickness=cv2.FILLED)
 
         # number of contours
         num_contours = len(contours)
 
+        # area list in µm²
+        areas_um = map(Analysis.px_to_um, areas_px)
+
+        # total areas
+        area_px = sum(areas_px)
+        area_um = sum(areas_um)
+
         return (
             processed_image,
             [
-                round(area_px / num_contours, 3),
-                round(area_um / num_contours, 3),
-                round(area_px, 3),
-                round(area_um, 3),
-                round(num_contours / image_area_um, 3),
-                round(area_um / image_area_um, 3),
-                ratios_sum / num_contours,
-                num_contours
+                round(area_px / num_contours, 3), # average area in px²
+                round(area_um / num_contours, 3), # average area in µm²
+                round(area_px, 3), # total area in px²
+                round(area_um, 3), # total area in µm²
+                round(num_contours / image_area_um, 3), # density in crystals/µm²
+                round(area_um / image_area_um, 3), # coverage ratio
+                ratios_sum / num_contours, # side ratio
+                num_contours, # number of contours
+                areas_um # list of areas in µm²
             ]
         )
 
