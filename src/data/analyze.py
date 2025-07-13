@@ -47,3 +47,7 @@ class AnalyzeBox(DataBox):
         # analyze button
         self.analyze_button = ttk.Button(self.box, text="Analyze")
         self.analyze_button.grid(row=0, column=4, padx=(20, 0), pady=5, sticky="ew")
+
+        # export button
+        self.export_button = ttk.Button(self.box, text="Export")
+        self.export_button.grid(row=0, column=5, padx=(20, 0), pady=5, sticky="ew")
