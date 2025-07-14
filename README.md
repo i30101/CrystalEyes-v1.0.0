@@ -1,4 +1,4 @@
-# <p> <b>Cellpose</b></p>
+# <p> <b>CrystalEyes</b></p>
 
 
 <img src="/assets/splash.png" width="300" title="cellpose" alt="cellpose" align="right" vspace="50">
