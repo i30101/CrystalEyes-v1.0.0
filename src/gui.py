@@ -183,6 +183,7 @@ class Gui:
             self.frame_entry_updated
         )
         self.analyze_box.analyze_button.config(command=self.analyze)
+        self.analyze_box.export_button.config(command=self.analyze_and_export)
 
 
 
@@ -435,12 +436,12 @@ class Gui:
         self.frame_changed(self.data_table.frame_number.get())
 
 
-    def analyze(self):
+    def analyze(self) -> bool:
         """ User wants to analyze LDF file """
 
         if self.linkam_data_file is None:
             self.console.error("No LDF file loaded")
-            return
+            return False
 
         start_frame = self.analyze_box.starting_frame.get()
         end_frame = self.analyze_box.ending_frame.get() + 1
@@ -450,7 +451,7 @@ class Gui:
                 or start_frame == end_frame
                 or start_frame > end_frame ):
             self.console.error("Frame range out of bounds")
-            return
+            return False
 
         self.linkam_data_file = self.linkam_data_file.trim(
             start_frame,
@@ -469,3 +470,12 @@ class Gui:
             + f"\n    Total duration: {duration:.3f} seconds"
             + f"({duration / len(self.linkam_data_file.raw_images):.3f} seconds per frame)"
         )
+
+        return True
+
+
+    def analyze_and_export(self):
+        """ User wants to analyze and export data """
+
+        if self.analyze():
+            self.export_data()
