@@ -76,7 +76,10 @@ class Analysis:
         num_contours = len(contours)
 
         # area list in µm²
-        areas_um = map(Analysis.px_to_um, areas_px)
+        areas_um = list(map(
+            lambda x: round(Analysis.px_to_um(x), 3),
+            areas_px
+        ))
 
         # total areas
         area_px = sum(areas_px)
@@ -91,7 +94,7 @@ class Analysis:
                 round(area_um, 3), # total area in µm²
                 round(num_contours / image_area_um, 3), # density in crystals/µm²
                 round(area_um / image_area_um, 3), # coverage ratio
-                ratios_sum / num_contours, # side ratio
+                round(ratios_sum / num_contours, 5), # side ratio
                 num_contours, # number of contours
                 areas_um # list of areas in µm²
             ]
@@ -101,7 +104,7 @@ class Analysis:
     @staticmethod
     def get_contours(image: np.ndarray):
         """ Use Cellpose to extract largest contours """
-        model = models.Cellpose(gpu=False, model_type='cyto')
+        model = models.Cellpose()
         masks, _, _, _ = model.eval(image, diameter=50, channels=[0, 0])
         rois = list(masks)
         contour_points = [[] for _ in masks]

@@ -14,10 +14,6 @@ import pandas as pd
 from src.link.analysis import Analysis
 
 
-def slope(x1: float, x2: float, delta: int) -> float:
-    return (x2 - x1) / delta
-
-
 class LinkamDataFile:
     """ Linkam Data File object """
 
@@ -74,48 +70,28 @@ class LinkamDataFile:
         """ Analyzes raw images and extracts data """
 
         self.processed_images = []
-        self.data = [[] for _ in range(8)]
+        self.data = [[] for _ in range(9)]
         self.image_areas = []
 
-        analyzed_times = []
+        # analyzed_times = []
 
         for i, image in enumerate(self.raw_images):
             t0 = time.time()
             analyzed_image, analyzed_data = Analysis.analyze_image(image)
             t1 = time.time()
             print(f"Image analyzed in {t1 - t0:.3f} seconds")
-            analyzed_times.append(round(t1 - t0, 3))
+            self.data[8].append(round(t1 - t0, 3))
 
             # append processed image
             self.processed_images.append(analyzed_image)
 
-            for variable in enumerate(analyzed_data):
-                if i == len(analyzed_data) - 1:
-                    continue
+            for j, variable in enumerate(analyzed_data[ : -1]):
+                self.data[j].append(variable)
 
-                self.data[i].append(variable)
+            # add distribution of areas
+            self.image_areas.append(analyzed_data[8])
 
-            for area in analyzed_data[8]:
-                self.image_areas.append({
-                    "frame": i + 1,
-                    "area_px": area,
-                })
-
-
-
-        # find rate of area change over time
-        average_area_um = self.data[1]
-        average_area_rate = []
-        for i, area in enumerate(average_area_um):
-            if i == 0:
-                average_area_rate.append(slope(area, average_area_um[i + 1], 1))
-            elif i == len(average_area_um) - 1:
-                average_area_rate.append(slope(average_area_um[i - 1], area, 1))
-            else:
-                average_area_rate.append(slope(average_area_um[i - 1], average_area_um[i + 1], 2))
-        self.data.append(average_area_rate)
-
-        self.data.append(analyzed_times)
+        # self.data[8].append(analyzed_times)
 
 
     def to_df(self) -> pd.DataFrame:
@@ -128,21 +104,33 @@ class LinkamDataFile:
             "Ramp number": self.ramps,
             "Average area (px²)": self.data[0],
             "Average area (µm²)": self.data[1],
-            "Rate of area change (µm²/min)": self.data[8],
             "Total area (px²)": self.data[2],
             "Total area (µm²)": self.data[3],
             "Density (crystals/µm²)": self.data[4],
             "Coverage (%)": self.data[5],
             "Side ratio": self.data[6],
             "Number of contours": self.data[7],
-            "Duration of analysis (s)": self.data[9]
+            "Duration of analysis (s)": self.data[8]
         }
+
+        # for key, value in columns.items():
+        #     print(f"{key}: {value}")
+
         return pd.DataFrame(columns)
 
 
     def area_to_df(self) -> pd.DataFrame:
         """ Converts image areas to Dataframe (one row per area) """
-        return pd.DataFrame(self.image_areas)
+
+        max_length = max(len(areas) for areas in self.image_areas)
+
+        areas_dict = {}
+
+        for i, areas in enumerate(self.image_areas):
+            areas_dict[f"Frame {i + 1}"] = areas + [None] * (max_length - len(areas))
+            # print(areas_dict[f"Frame {i + 1}"])
+
+        return pd.DataFrame(pd.DataFrame(areas_dict))
 
 
     def data_summary(self) -> str:
