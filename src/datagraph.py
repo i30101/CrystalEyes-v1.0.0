@@ -50,16 +50,18 @@ class DataGraph(DataBox):
         self.ax.set_xlabel("Frame")
         self.ax.set_ylabel("Temp (°C)")
 
+
+
         # Plot line
-        self.ax.plot(frames, temperature_data, color="gray", linewidth=2)
+        self.ax.plot(frames, temperature_data, color="#0077b6", linewidth=2)
 
         # Plot dots with picker enabled
-        self.dot_artists = self.ax.scatter(frames, temperature_data, color="blue", s=30, picker=5)
+        self.dot_artists = self.ax.scatter(frames, temperature_data, color="#0077b6", s=30, picker=5)
 
         # Set axis limits and labels
         self.ax.set_xlim(0, max(frames) if frames else 1)
         if temperature_data:
-            self.ax.set_ylim(min(temperature_data), max(temperature_data))
+            self.ax.set_ylim(min(temperature_data) - 0.1, max(temperature_data) + 0.1)
 
         self.canvas.draw()
 
