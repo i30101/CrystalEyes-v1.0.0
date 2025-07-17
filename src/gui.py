@@ -14,30 +14,29 @@ import sv_ttk
 
 import os
 from ctypes import windll
-import numpy as np
 from PIL import Image
 import time
 
-from src.link.analysis import Analysis
-from src.media.viewer import Viewer
-from src.variables import Variables
+from analysis import Analysis
+from viewer import Viewer
+from variables import Variables
 
-from src.nav.nav1 import Nav1
-from src.nav.nav2 import Nav2
-from src.nav.nav3 import Nav3
-from src.nav.nav4 import Nav4
+from nav import Nav1
+from nav import Nav2
+from nav import Nav3
+from nav import Nav4
 
 # components
-from src.components.console import Console
-from src.options import Options
+from console import Console
+from options import Options
 
 # data boxes
-from src.data.pathviewer import PathViewer
-from src.data.datatable import DataTable
-from src.data.datagraph import DataGraph
-from src.data.analyze import AnalyzeBox
+from pathviewer import PathViewer
+from datatable import DataTable
+from datagraph import DataGraph
+from analyze import AnalyzeBox
 
-from src.link.reader import LinkamDataReader
+from reader import LinkamDataReader
 
 
 windll.shcore.SetProcessDpiAwareness(1)

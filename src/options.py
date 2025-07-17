@@ -12,7 +12,7 @@ Options for CrystalEyes
 import json
 from pathlib import Path
 
-from src.variables import Variables
+from variables import Variables
 
 
 class Options:

@@ -12,7 +12,7 @@ Template box for data display
 import tkinter as tk
 from tkinter import ttk
 
-from src.variables import Variables
+from variables import Variables
 
 
 class DataBox:

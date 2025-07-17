@@ -21,8 +21,8 @@ Using a graphics card is highly recommended to accelerate the Cellpose algorithm
 import tkinter as tk
 
 from gui import Gui
-from src.components.splash import Splash
-from src.variables import Variables
+from splash import Splash
+from variables import Variables
 
 
 

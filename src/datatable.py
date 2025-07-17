@@ -12,7 +12,7 @@ Data viewing table
 import tkinter as tk
 from tkinter import ttk
 
-from src.data.databox import DataBox
+from databox import DataBox
 
 class DataTable(DataBox):
     """ Data previewer """

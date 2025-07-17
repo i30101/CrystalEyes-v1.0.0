@@ -14,7 +14,7 @@ import cv2
 import numpy as np
 from cellpose import models
 
-from src.variables import Variables
+from variables import Variables
 
 
 

@@ -17,7 +17,7 @@ from pathlib import Path
 
 import numpy as np
 
-from src.media.container import MediaContainer
+from container import MediaContainer
 
 
 class MediaViewer(MediaContainer):
@@ -29,20 +29,20 @@ class MediaViewer(MediaContainer):
         self.media = None
         self.duration = 0
 
-        self.PAUSE = str(Path(__file__).parent.parent.parent / "assets" / "pause.png")
+        self.PAUSE = str(Path(__file__).parent.parent / "assets" / "pause.png")
         pause_img = Image.open(self.PAUSE)
         self.pause_img_tk = ImageTk.PhotoImage(pause_img)
 
-        self.PLAY = str(Path(__file__).parent.parent.parent / "assets" / "play.png")
+        self.PLAY = str(Path(__file__).parent.parent / "assets" / "play.png")
         play_img = Image.open(self.PLAY)
         self.play_img_tk = ImageTk.PhotoImage(play_img)
 
-        self.PREVIOUS = str(Path(__file__).parent.parent.parent / "assets" / "previous.png")
+        self.PREVIOUS = str(Path(__file__).parent.parent / "assets" / "previous.png")
         previous_img = Image.open(self.PREVIOUS)
         self.previous_img_tk = ImageTk.PhotoImage(previous_img)
 
 
-        self.NEXT = str(Path(__file__).parent.parent.parent / "assets" / "next.png")
+        self.NEXT = str(Path(__file__).parent.parent / "assets" / "next.png")
         next_img = Image.open(self.NEXT)
         self.next_img_tk = ImageTk.PhotoImage(next_img)
 

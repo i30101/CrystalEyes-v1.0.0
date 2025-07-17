@@ -9,7 +9,7 @@ Data graph for visualizing temperature
 """
 
 
-from src.data.databox import DataBox
+from databox import DataBox
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg

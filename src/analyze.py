@@ -12,7 +12,7 @@ Analysis box
 import tkinter as tk
 from tkinter import ttk
 
-from src.data.databox import DataBox
+from databox import DataBox
 
 
 class AnalyzeBox(DataBox):

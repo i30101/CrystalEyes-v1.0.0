@@ -11,7 +11,7 @@ Splash screen
 import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
 
-from src.variables import Variables
+from variables import Variables
 
 
 class Splash:
